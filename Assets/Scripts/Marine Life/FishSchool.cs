@@ -70,7 +70,7 @@ public class FishSchool : MonoBehaviour
 			                                                                     Random.Range (-halfWidth, halfWidth));
 			GameObject go = Instantiate (prefab, startPosition, Random.rotation) as GameObject;
 			go.transform.parent = fishContainer.transform;
-			fishies [i] = new Fish (go);
+			fishies [i] = new Fish (go,baseSpeed);
 			octree.Add (fishies [i], fishBounds);
 			StartCoroutine (Cycle (fishies [i]));
 		}
@@ -79,7 +79,7 @@ public class FishSchool : MonoBehaviour
 	void Update ()
 	{
 		foreach (Fish fish in fishies)
-			fish.Swim ();
+			fish.Swim (interval);
 	}
 
 	private IEnumerator Cycle (Fish fish)
@@ -104,18 +104,23 @@ public class FishSchool : MonoBehaviour
 		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction;
 
 		//if fish is above water or below ground, turn it up/down
-		if (maxHeightGameObject != null && fish.gameObject.transform.position.y > maxHeightGameObject.transform.position.y) {
+		if (maxHeightGameObject != null && fish.gameObject.transform.position.y > GetMaxHeight ()) {
 			idealDirection += Vector3.down * weightOfOutOfBounds;
 		} else if (minHeightTerrain != null) {
-			float minHeight = minHeightTerrain.SampleHeight (fish.gameObject.transform.position)+minHeightTerrain.transform.position.y;
-			if (fish.gameObject.transform.position.y < minHeight)
+			if (fish.gameObject.transform.position.y < GetMinHeight(fish))
 				idealDirection += Vector3.up * weightOfOutOfBounds;
 		}
 		
 		Vector3 newDirection = Vector3.Lerp (fish.gameObject.transform.forward, idealDirection, interval); //go more towards this new direction if interval is high and the fish check less often
-		//Vector3 newDirection = idealDirection;
-		fish.gameObject.transform.forward = newDirection;
-		fish.speed = baseSpeed;
+		fish.SetNewFacingDirection (newDirection);
+	}
+
+	private float GetMaxHeight(){
+		return maxHeightGameObject.transform.position.y-5;
+	}
+
+	private float GetMinHeight(Fish fish){
+		return minHeightTerrain.SampleHeight (fish.gameObject.transform.position) + minHeightTerrain.transform.position.y + 5;
 	}
 
 	private Vector3 GetNearbyFishDirection (Fish fish, Bounds bounds)
