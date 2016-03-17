@@ -4,22 +4,27 @@ using System.Collections;
 public class Fish
 {
 
-	public Fish (GameObject go)
+	public Fish (GameObject fishGameObject)
 	{
-		this.go = go;
+		this.gameObject = fishGameObject;
 	}
 		
 	public void ChangeColor (Color newColor)
 	{
-		foreach (GameObject child in ParentChildFunctions.GetAllChildren(go,true)) {
-			MeshRenderer mr = child.GetComponent<MeshRenderer> ();
-			if (mr != null)
-				mr.material.color = newColor;
+		foreach (GameObject child in ParentChildFunctions.GetAllChildren(gameObject,true)) {
+			MeshRenderer meshRenderer = child.GetComponent<MeshRenderer> ();
+			if (meshRenderer != null)
+				meshRenderer.material.color = newColor;
 		}
 			
 	}
 		
-	public GameObject go;
+	public GameObject gameObject;
 	public float speed;
+
+	public void Swim ()
+	{
+		gameObject.transform.position = gameObject.transform.position + gameObject.transform.forward * speed * Time.deltaTime;
+	}
 
 }
