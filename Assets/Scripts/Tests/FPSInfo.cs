@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
+//attach this script, once, to any gameobject and there will be a debug canvas with an FPS counter, updated every second
 public class FPSInfo : MonoBehaviour {
 	private GameObject canvas;
 	private Text text;
