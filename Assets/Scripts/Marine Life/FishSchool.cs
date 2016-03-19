@@ -17,7 +17,7 @@ public class FishSchool : MonoBehaviour
 	public float weightOfAttraction = 1.5f;
 	public float weightOfSelf = 5;
 	private float weightOfOutOfBounds; //this is used when the fish goes below the floor, or above the water
-	public Vector3 averageFishPosition;
+	private Vector3 averageFishPosition;
 	
 	public GameObject maxHeightGameObject;
 	public Terrain minHeightTerrain;
@@ -52,6 +52,10 @@ public class FishSchool : MonoBehaviour
 
 	public float GetOutOfBoundsWeight(){
 		return weightOfOutOfBounds;
+	}
+
+	public Vector3 GetAverageFishPosition(){
+		return averageFishPosition;
 	}
 	
 	private void SetupFishies ()
@@ -92,7 +96,6 @@ public class FishSchool : MonoBehaviour
 			yield return new WaitForSeconds(interval);
 		}
 	}
-
 	
 	private float GetMaxHeight(){
 		return maxHeightGameObject.transform.position.y-5;

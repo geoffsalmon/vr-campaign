@@ -53,7 +53,7 @@ public class Fish : MonoBehaviour
 		Vector3 repulsion = fishSchool.GetRepulsionAveragePosition (this) * fishSchool.weightOfRepulsion; //get the vector that best faces away from very nearby fish
 		Vector3 orientation = fishSchool.GetOrientationAverageDirection (this) * fishSchool.weightOfOrientation; //get the direction that nearby fish are generally facing
 		
-		Vector3 attractionDirection = fishSchool.averageFishPosition - transform.position;
+		Vector3 attractionDirection = fishSchool.GetAverageFishPosition() - transform.position;
 		Vector3 attraction = attractionDirection.normalized *fishSchool.weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
 		
 		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction;
