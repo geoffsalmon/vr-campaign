@@ -63,12 +63,12 @@ public class FishLure : MonoBehaviour {
 		if (GetRange () == 0)
 			return true;
 		Vector3 diff = fish.gameObject.transform.position - transform.position;
-		return diff.sqrMagnitude > GetSqrRange ();
+		return diff.sqrMagnitude < GetSqrRange ();
 	}
 
 	public void Update(){
 		timer += Time.deltaTime;
-		if (timer > lureSettings [index].duration) {
+		if (lureSettings.Length>1 && timer > lureSettings [index].duration) {
 			index=(index+1)%lureSettings.Length;
 			timer=0;
 		}
