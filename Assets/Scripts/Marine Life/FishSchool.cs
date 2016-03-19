@@ -3,7 +3,7 @@ using System.Collections;
 
 public class FishSchool : MonoBehaviour
 {
-	public GameObject prefab;
+	public GameObject fishPrefab;
 	public int fishCount = 200;
 	public float interval = 0.5f; //this is how often each fish will re-orient itself
 	public float baseSpeed = 4; //fish swim speed
@@ -17,7 +17,7 @@ public class FishSchool : MonoBehaviour
 	public float weightOfAttraction = 1.5f;
 	public float weightOfSelf = 5;
 	private float weightOfOutOfBounds; //this is used when the fish goes below the floor, or above the water
-	private Vector3 averageFishPosition;
+	public Vector3 averageFishPosition;
 	
 	public GameObject maxHeightGameObject;
 	public Terrain minHeightTerrain;
@@ -30,24 +30,28 @@ public class FishSchool : MonoBehaviour
 	
 	void Start ()
 	{
-		if (prefab == null) {
+		if (fishPrefab == null) {
 			string defaultPrefab = "test fish";
 			Debug.Log ("Swarm was given no fish prefab. Using default '" + defaultPrefab + "'.");
-			prefab = Resources.Load (defaultPrefab) as GameObject;
+			fishPrefab = Resources.Load (defaultPrefab) as GameObject;
 		}
 		
 		if (maxHeightGameObject == null)
-			Debug.LogError ("maxHeightGameObject is null. no max height!");
+			Debug.Log ("maxHeightGameObject is null. no max height!");
 		if (minHeightTerrain == null)
-			Debug.LogError ("minHeightTerrain is null. no min height!");
-		
-		StartCoroutine (CalculateAverageFishPosition ());
+			Debug.Log ("minHeightTerrain is null. no min height!");
+
 		weightOfOutOfBounds = (weightOfSelf + weightOfRepulsion + weightOfOrientation + weightOfAttraction)/5;
 		SetupFishies ();
 		MakeFishies ();
-		
+		StartCoroutine (CalculateAverageFishPosition ());
+
 		if (interval > 1)
 			Debug.LogError ("Warning: interval greater than one. Might cause weirdness in ApplyZones.");
+	}
+
+	public float GetOutOfBoundsWeight(){
+		return weightOfOutOfBounds;
 	}
 	
 	private void SetupFishies ()
@@ -68,18 +72,15 @@ public class FishSchool : MonoBehaviour
 			Vector3 startPosition = gameObject.transform.position + new Vector3 (Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth));
-			GameObject go = Instantiate (prefab, startPosition, Random.rotation) as GameObject;
-			go.transform.parent = fishContainer.transform;
-			fishies [i] = new Fish (go,baseSpeed);
+			GameObject fishGameObject = Instantiate (fishPrefab, startPosition, Random.rotation) as GameObject;
+			fishGameObject.transform.parent = fishContainer.transform;
+			Fish fish=fishGameObject.GetComponent<Fish>();
+			if(fish==null)
+				fish=fishGameObject.AddComponent<Fish>();
+			fish.Setup(this, baseSpeed);
+			fishies [i] = fish;
 			octree.Add (fishies [i], fishBounds);
-			StartCoroutine (Cycle (fishies [i]));
 		}
-	}
-	
-	void Update ()
-	{
-		foreach (Fish fish in fishies)
-			fish.Swim (interval);
 	}
 	
 	private IEnumerator CalculateAverageFishPosition(){
@@ -91,41 +92,7 @@ public class FishSchool : MonoBehaviour
 			yield return new WaitForSeconds(interval);
 		}
 	}
-	
-	private IEnumerator Cycle (Fish fish)
-	{
-		yield return new WaitForSeconds (Random.Range (0, interval)); //this initial wait is to spread out fish computation
-		while (true) {
-			UpdateOctree (fish);
-			ApplyZones (fish);
-			yield return new WaitForSeconds (interval);
-			
-		}
-	}
-	
-	private void ApplyZones (Fish fish)
-	{
-		//calculate and apply the new orientation this fish should have
-		Vector3 selfDirection = fish.gameObject.transform.forward * weightOfSelf;
-		Vector3 repulsion = GetNearbyFishVector (fish, boundsOfRepulsion) * weightOfRepulsion; //get the vector that best faces away from very nearby fish
-		Vector3 orientation = GetNearbyFishDirection (fish, boundsOfOrientation) * weightOfOrientation; //get the direction that nearby fish are generally facing
-		
-		Vector3 attractionDirection = averageFishPosition - fish.gameObject.transform.position;
-		Vector3 attraction = attractionDirection.normalized * weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
-		
-		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction;
-		
-		//if fish is above water or below ground, turn it up/down
-		if (maxHeightGameObject != null && fish.gameObject.transform.position.y > GetMaxHeight ()) {
-			idealDirection += Vector3.down * weightOfOutOfBounds;
-		} else if (minHeightTerrain != null) {
-			if (fish.gameObject.transform.position.y < GetMinHeight(fish))
-				idealDirection += Vector3.up * weightOfOutOfBounds;
-		}
-		
-		Vector3 newDirection = Vector3.Lerp (fish.gameObject.transform.forward, idealDirection, interval); //go more towards this new direction if interval is high and the fish check less often
-		fish.SetNewFacingDirection (newDirection);
-	}
+
 	
 	private float GetMaxHeight(){
 		return maxHeightGameObject.transform.position.y-5;
@@ -135,27 +102,35 @@ public class FishSchool : MonoBehaviour
 		return minHeightTerrain.SampleHeight (fish.gameObject.transform.position) + minHeightTerrain.transform.position.y + 5;
 	}
 	
-	private Vector3 GetNearbyFishDirection (Fish fish, Bounds bounds)
+	public Vector3 GetOrientationAverageDirection (Fish fish)
 	{
 		//looks at all fish surrounding fish within bounds bounds, and returns the average direction they're facing
 		Vector3 direction = Vector3.zero;		
-		bounds.center = fish.gameObject.transform.position;
-		foreach (Fish otherFish in octree.GetColliding(bounds))
+		boundsOfOrientation.center = fish.gameObject.transform.position;
+		foreach (Fish otherFish in octree.GetColliding(boundsOfOrientation))
 			direction += otherFish.gameObject.transform.forward;
 		return direction.normalized;
 	}
+
+	public bool IsFishBelowGround(Fish fish){
+		return minHeightTerrain != null && fish.gameObject.transform.position.y < GetMinHeight (fish);
+	}
+
+	public bool IsFishAboveWater(Fish fish){
+		return maxHeightGameObject != null && transform.position.y > GetMaxHeight ();
+	}
 	
-	private Vector3 GetNearbyFishVector (Fish fish, Bounds bounds)
+	public Vector3 GetRepulsionAveragePosition (Fish fish)
 	{
-		//looks at all fish surrounding fish within bounds bounds, and returns a unit vector averaging their positions relative to fish
+		//looks at all fish surrounding fish within boundsOfRepulsion, and returns a unit vector averaging their positions relative to fish
 		Vector3 nearby = Vector3.zero;
-		bounds.center = fish.gameObject.transform.position;
-		foreach (Fish otherFish in octree.GetColliding(bounds))
+		boundsOfRepulsion.center = fish.gameObject.transform.position;
+		foreach (Fish otherFish in octree.GetColliding(boundsOfRepulsion))
 			nearby += otherFish.gameObject.transform.position - fish.gameObject.transform.position;
 		return nearby.normalized;
 	}
 	
-	private void UpdateOctree (Fish fish)
+	public void UpdateOctree (Fish fish)
 	{
 		//octree is a data structure to efficiently keep track of which fishies are near other fishies. But it must be updated regularly.
 		octree.Remove (fish);
