@@ -104,11 +104,20 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   /// ray sent from the camera on the object.
   public void OnGazeStay(Camera camera, GameObject targetObject, Vector3 intersectionPosition) {
     SetGazeTarget(intersectionPosition);
-    targetTime -= Time.deltaTime;
-	Debug.Log("ON: " + targetObject.name);
-	if(targetTime < 0){
-		Destroy(targetObject);
-	}
+	Debug.Log("ON: " + targetObject.name + " On Layer: " + targetObject.layer + " Parent: "+ camera.transform.parent.parent.parent);
+		targetTime -= Time.deltaTime;
+		if(targetTime < 0){
+			if(targetObject.layer == 9){ // "SchoolOfFish"
+				Destroy(targetObject);
+			}
+			if(targetObject.layer == 10){ // "BigFishTransport"
+				Debug.Log("WE GOT A BIG ONE!!!!!!! WEEEEEEEEEEEEEE....");
+				camera.transform.parent.parent.parent = targetObject.transform;
+			}
+			reticleDistanceInMeters = kReticleDistanceMax;
+			reticleInnerAngle = kReticleMinInnerAngle;
+			reticleOuterAngle = kReticleMinOuterAngle;
+		}
   }
 
   /// Called when the user's look no longer intersects an object previously
