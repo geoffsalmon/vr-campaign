@@ -23,6 +23,7 @@ public class FishSchool : MonoBehaviour
 	public Terrain minHeightTerrain;
 	private float schoolWidth = 50; //octree initialization size, small optimization consideration
 	private Fish[] fishies;
+	private FishLure[] fishLures;
 	private GameObject fishContainer;
 	private Bounds fishBounds;
 	private Bounds boundsOfOrientation, boundsOfRepulsion;
@@ -42,6 +43,7 @@ public class FishSchool : MonoBehaviour
 			Debug.Log ("minHeightTerrain is null. no min height!");
 
 		weightOfOutOfBounds = (weightOfSelf + weightOfRepulsion + weightOfOrientation + weightOfAttraction)/5;
+		fishLures = FindObjectsOfType<FishLure> ();
 		SetupFishies ();
 		MakeFishies ();
 		StartCoroutine (CalculateAverageFishPosition ());
@@ -96,7 +98,18 @@ public class FishSchool : MonoBehaviour
 			yield return new WaitForSeconds(interval);
 		}
 	}
-	
+
+	public Vector3 GetLureVector(Fish fish){
+		Vector3 lure = Vector3.zero;
+		foreach (FishLure fishLure in fishLures) {
+			if(fishLure.IsFishInRange(fish)){
+				Vector3 diff=fishLure.gameObject.transform.position-fish.gameObject.transform.position;
+				lure+= diff* fishLure.GetWeight();
+			}
+		}
+		return lure;
+	}
+
 	private float GetMaxHeight(){
 		return maxHeightGameObject.transform.position.y-5;
 	}
