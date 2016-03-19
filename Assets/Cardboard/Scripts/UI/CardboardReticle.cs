@@ -83,7 +83,7 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   public void OnGazeDisabled() {
 
   }
-
+  public float targetTime = 3.0f;
   /// Called when the user is looking on a valid GameObject. This can be a 3D
   /// or UI element.
   ///
@@ -92,6 +92,8 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   /// point of the ray sent from the camera on the object.
   public void OnGazeStart(Camera camera, GameObject targetObject, Vector3 intersectionPosition) {
     SetGazeTarget(intersectionPosition);
+	targetTime = 3.0f;
+    Debug.Log("STARTED");
   }
 
   /// Called every frame the user is still looking at a valid GameObject. This
@@ -102,6 +104,11 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   /// ray sent from the camera on the object.
   public void OnGazeStay(Camera camera, GameObject targetObject, Vector3 intersectionPosition) {
     SetGazeTarget(intersectionPosition);
+    targetTime -= Time.deltaTime;
+	Debug.Log("ON: " + targetObject.name);
+	if(targetTime < 0){
+		Destroy(targetObject);
+	}
   }
 
   /// Called when the user's look no longer intersects an object previously
@@ -115,6 +122,7 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
     reticleDistanceInMeters = kReticleDistanceMax;
     reticleInnerAngle = kReticleMinInnerAngle;
     reticleOuterAngle = kReticleMinOuterAngle;
+	Debug.Log("ENDED");
   }
 
   /// Called when the Cardboard trigger is initiated. This is practically when
