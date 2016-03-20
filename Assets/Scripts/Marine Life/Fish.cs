@@ -56,7 +56,7 @@ public class Fish : MonoBehaviour
 		Vector3 attractionDirection = fishSchool.GetAverageFishPosition() - transform.position;
 		Vector3 attraction = attractionDirection.normalized *fishSchool.weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
 		
-		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction;
+		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction +fishSchool.GetLureVector(this);
 		
 		//if fish is above water or below ground, turn it up/down
 		if (fishSchool.IsFishBelowGround(this)) {
