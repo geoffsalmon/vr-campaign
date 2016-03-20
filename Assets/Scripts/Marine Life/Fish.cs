@@ -1,19 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Fish
+public class Fish : MonoBehaviour
 {
-	public GameObject gameObject;
-	public float speed;
-	
+	private float speed;
+	private FishSchool fishSchool;	
 	private Vector3 previousDirection,newDirection;
 	private float directionTimer = 0;
 
-	public Fish (GameObject fishGameObject, float speed)
+	public void Setup (FishSchool fishSchool, float speed)
 	{
-		this.gameObject = fishGameObject;
+		this.fishSchool=fishSchool;
 		this.speed = speed;
 		ChangeColor (new Color(0.3f,0.3f,0.5f));
+
+		StartCoroutine (Cycle ());
 	}
 		
 	public void ChangeColor (Color newColor)
@@ -26,17 +27,46 @@ public class Fish
 			
 	}
 
-	public void Swim (float interval)
+	public void Update ()
 	{
-		directionTimer += Time.deltaTime;
-		gameObject.transform.forward = Vector3.Lerp (previousDirection, newDirection, directionTimer/interval);
-
-		gameObject.transform.position = gameObject.transform.position + gameObject.transform.forward * speed * Time.deltaTime;
+		if (fishSchool != null) {
+			directionTimer += Time.deltaTime;
+			gameObject.transform.forward = Vector3.Lerp (previousDirection, newDirection, directionTimer / fishSchool.interval);
+			gameObject.transform.position = gameObject.transform.position + gameObject.transform.forward * speed * Time.deltaTime;
+		}
 	}
-
-	public void SetNewFacingDirection(Vector3 newFacingDirection){
-		previousDirection = gameObject.transform.forward;
-		newDirection = newFacingDirection;
+	
+	private IEnumerator Cycle ()
+	{
+		yield return new WaitForSeconds (Random.Range (0, fishSchool.interval)); //this initial wait is to spread out fish computation
+		while (true) {
+			fishSchool.UpdateOctree (this);
+			ApplyZones ();
+			yield return new WaitForSeconds (fishSchool.interval);
+		}
+	}
+	
+	private void ApplyZones ()
+	{
+		//calculate and apply the new orientation this fish should have
+		Vector3 selfDirection = transform.forward * fishSchool.weightOfSelf;
+		Vector3 repulsion = fishSchool.GetRepulsionAveragePosition (this) * fishSchool.weightOfRepulsion; //get the vector that best faces away from very nearby fish
+		Vector3 orientation = fishSchool.GetOrientationAverageDirection (this) * fishSchool.weightOfOrientation; //get the direction that nearby fish are generally facing
+		
+		Vector3 attractionDirection = fishSchool.GetAverageFishPosition() - transform.position;
+		Vector3 attraction = attractionDirection.normalized *fishSchool.weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
+		
+		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction +fishSchool.GetLureVector(this);
+		
+		//if fish is above water or below ground, turn it up/down
+		if (fishSchool.IsFishBelowGround(this)) {
+			idealDirection += Vector3.down * fishSchool.GetOutOfBoundsWeight();
+		} else if (fishSchool.IsFishAboveWater(this)){
+			idealDirection += Vector3.up * fishSchool.GetOutOfBoundsWeight();
+		}
+		
+		newDirection = Vector3.Lerp (transform.forward, idealDirection, fishSchool.interval);
+		previousDirection = transform.forward;
 		directionTimer = 0;
 	}
 
