@@ -85,8 +85,8 @@ public class FishSchool : MonoBehaviour
 				fish=fishGameObject.AddComponent<Fish>();
 			fish.Setup(this, baseSpeed);
 			fishies [i] = fish;
-			Color newColor = new Color( Random.value, Random.value, Random.value, 1.0f ); // RANDOM COLOR ADDED
-			fishies[i].GetComponent<MeshRenderer>().material.color = newColor; // RANDOM COLOR APPLIED
+//			Color newColor = new Color( Random.value, Random.value, Random.value, 1.0f ); // RANDOM COLOR ADDED
+//			fishies[i].GetComponent<MeshRenderer>().material.color = newColor; // RANDOM COLOR APPLIED
 			octree.Add (fishies [i], fishBounds);
 		}
 	}
