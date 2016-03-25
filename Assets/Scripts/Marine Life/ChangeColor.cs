@@ -2,13 +2,14 @@
 using System.Collections;
 
 public class ChangeColor : MonoBehaviour {
-	public Color newColor = new Color( Random.value, Random.value, Random.value, 1.0f );
-
+	
 	// Use this for initialization
 	void Start () {
+		Color newColor = new Color( Random.value, Random.value, Random.value, 1.0f );
 		// = newColor;
 		//renderer.material.color = newColor;
 		Debug.Log(newColor);
+		GetComponent<MeshRenderer>().material.color = newColor;
 //		Color myColor;
 //bool mode = Random.value > 0.5f;
 //float rand = Random.value;
