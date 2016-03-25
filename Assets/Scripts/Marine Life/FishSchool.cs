@@ -18,9 +18,7 @@ public class FishSchool : MonoBehaviour
 	public float weightOfSelf = 5;
 	private float weightOfOutOfBounds; //this is used when the fish goes below the floor, or above the water
 	private Vector3 averageFishPosition;
-	
-	public GameObject maxHeightGameObject;
-	public Terrain minHeightTerrain;
+	public MovementBoundary floorBoundary, ceilingBoundary;
 	private float schoolWidth = 50; //octree initialization size, small optimization consideration
 	private Fish[] fishies;
 	private FishLure[] fishLures;
@@ -36,27 +34,47 @@ public class FishSchool : MonoBehaviour
 			Debug.Log ("Swarm was given no fish prefab. Using default '" + defaultPrefab + "'.");
 			fishPrefab = Resources.Load (defaultPrefab) as GameObject;
 		}
-		
-		if (maxHeightGameObject == null)
-			Debug.Log ("maxHeightGameObject is null. no max height!");
-		if (minHeightTerrain == null)
-			Debug.Log ("minHeightTerrain is null. no min height!");
 
-		weightOfOutOfBounds = (weightOfSelf + weightOfRepulsion + weightOfOrientation + weightOfAttraction)/5;
-		fishLures = FindObjectsOfType<FishLure> ();
+		GetFishLures ();
+		SetupBoundaries ();
 		SetupFishies ();
 		MakeFishies ();
 		StartCoroutine (CalculateAverageFishPosition ());
 
 		if (interval > 1)
-			Debug.LogError ("Warning: interval greater than one. Might cause weirdness in ApplyZones.");
+			Debug.LogWarning ("Interval greater than one. Might cause weirdness in ApplyZones.");
 	}
 
-	public float GetOutOfBoundsWeight(){
+	private FishLure[] GetFishLures(){
+		if(fishLures==null)
+			fishLures = FindObjectsOfType<FishLure> ();
+		return fishLures;
+	}
+
+	private void SetupBoundaries ()
+	{			
+		float lureWeight = 0;
+		foreach (FishLure fl in GetFishLures())
+			lureWeight += fl.GetWeight ();
+		weightOfOutOfBounds = (weightOfSelf + weightOfRepulsion + weightOfOrientation + weightOfAttraction+lureWeight)/2;
+
+		if (ceilingBoundary == null)
+			Debug.LogWarning ("A fish school has no ceiling, so no maximum height. Maybe this is okay. " + gameObject.name);
+		else
+			ceilingBoundary.Setup (false);
+		if (floorBoundary == null)
+			Debug.LogWarning ("A fish school has no floor, so no minimum height. Maybe this is okay. " + gameObject.name);
+		else
+			floorBoundary.Setup (true);
+	}
+
+	public float GetOutOfBoundsWeight ()
+	{
 		return weightOfOutOfBounds;
 	}
 
-	public Vector3 GetAverageFishPosition(){
+	public Vector3 GetAverageFishPosition ()
+	{
 		return averageFishPosition;
 	}
 	
@@ -64,7 +82,7 @@ public class FishSchool : MonoBehaviour
 	{
 		fishies = new Fish[fishCount];
 		fishContainer = new GameObject ("fishes - " + gameObject.name);
-		fishBounds = new Bounds (Vector3.zero, new Vector3 (1, 1, 1)); //fish are 1x1x1 meters, only needed for octree, values don't matter much
+		fishBounds = new Bounds (Vector3.zero, new Vector3 (0.2f, 0.2f, 0.2f)); //octree needs some fish size, values don't matter much
 		octree = new BoundsOctree<Fish> (schoolWidth, transform.position, 0.1f, 1);
 
 		boundsOfOrientation = new Bounds (Vector3.zero, new Vector3 (radiusOfOrientation, radiusOfOrientation, radiusOfOrientation));
@@ -80,42 +98,36 @@ public class FishSchool : MonoBehaviour
 			                                                                     Random.Range (-halfWidth, halfWidth));
 			GameObject fishGameObject = Instantiate (fishPrefab, startPosition, Random.rotation) as GameObject;
 			fishGameObject.transform.parent = fishContainer.transform;
-			Fish fish=fishGameObject.GetComponent<Fish>();
-			if(fish==null)
-				fish=fishGameObject.AddComponent<Fish>();
-			fish.Setup(this, baseSpeed);
+			Fish fish = fishGameObject.GetComponent<Fish> ();
+			if (fish == null)
+				fish = fishGameObject.AddComponent<Fish> ();
+			fish.Setup (this, baseSpeed);
 			fishies [i] = fish;
 			octree.Add (fishies [i], fishBounds);
 		}
 	}
 	
-	private IEnumerator CalculateAverageFishPosition(){
+	private IEnumerator CalculateAverageFishPosition ()
+	{
 		while (true) {
-			averageFishPosition=Vector3.zero;
-			foreach(Fish fish in fishies)
-				averageFishPosition+=fish.gameObject.transform.position;
-			averageFishPosition/=fishies.Length;
-			yield return new WaitForSeconds(interval);
+			averageFishPosition = Vector3.zero;
+			foreach (Fish fish in fishies)
+				averageFishPosition += fish.gameObject.transform.position;
+			averageFishPosition /= fishies.Length;
+			yield return new WaitForSeconds (interval);
 		}
 	}
 
-	public Vector3 GetLureVector(Fish fish){
+	public Vector3 GetLureVector (Fish fish)
+	{
 		Vector3 lure = Vector3.zero;
 		foreach (FishLure fishLure in fishLures) {
-			if(fishLure.IsFishInRange(fish)){
-				Vector3 diff=fishLure.gameObject.transform.position-fish.gameObject.transform.position;
-				lure+= diff* fishLure.GetWeight();
+			if (fishLure.IsFishInRange (fish)) {
+				Vector3 diff = fishLure.gameObject.transform.position - fish.gameObject.transform.position;
+				lure += diff.normalized * fishLure.GetWeight ();
 			}
 		}
 		return lure;
-	}
-
-	private float GetMaxHeight(){
-		return maxHeightGameObject.transform.position.y-5;
-	}
-	
-	private float GetMinHeight(Fish fish){
-		return minHeightTerrain.SampleHeight (fish.gameObject.transform.position) + minHeightTerrain.transform.position.y + 5;
 	}
 	
 	public Vector3 GetOrientationAverageDirection (Fish fish)
@@ -128,12 +140,22 @@ public class FishSchool : MonoBehaviour
 		return direction.normalized;
 	}
 
-	public bool IsFishBelowGround(Fish fish){
-		return minHeightTerrain != null && fish.gameObject.transform.position.y < GetMinHeight (fish);
+	public bool IsFishTooLow (Fish fish)
+	{
+		//where returning false typically means do no extra action
+		bool isBelow= floorBoundary!=null && floorBoundary.IsBreakingRule(fish.gameObject.transform.position);
+		if (isBelow)
+			Debug.Log ("it's below!");
+		return isBelow;
 	}
 
-	public bool IsFishAboveWater(Fish fish){
-		return maxHeightGameObject != null && transform.position.y > GetMaxHeight ();
+	public bool IsFishTooHigh (Fish fish)
+	{
+		//where returning false typically means do no extra action
+		bool isAbove= ceilingBoundary != null && ceilingBoundary.IsBreakingRule(fish.gameObject.transform.position);
+		if (isAbove)
+			Debug.Log ("it's above!");
+		return isAbove;
 	}
 	
 	public Vector3 GetRepulsionAveragePosition (Fish fish)

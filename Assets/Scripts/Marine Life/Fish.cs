@@ -4,15 +4,15 @@ using System.Collections;
 public class Fish : MonoBehaviour
 {
 	private float speed;
-	private FishSchool fishSchool;	
-	private Vector3 previousDirection,newDirection;
+	private FishSchool fishSchool;
+	private Vector3 previousDirection, newDirection;
 	private float directionTimer = 0;
 
 	public void Setup (FishSchool fishSchool, float speed)
 	{
-		this.fishSchool=fishSchool;
+		this.fishSchool = fishSchool;
 		this.speed = speed;
-		ChangeColor (new Color(0.3f,0.3f,0.5f));
+		ChangeColor (new Color (0.3f, 0.3f, 0.5f));
 
 		StartCoroutine (Cycle ());
 	}
@@ -53,18 +53,20 @@ public class Fish : MonoBehaviour
 		Vector3 repulsion = fishSchool.GetRepulsionAveragePosition (this) * fishSchool.weightOfRepulsion; //get the vector that best faces away from very nearby fish
 		Vector3 orientation = fishSchool.GetOrientationAverageDirection (this) * fishSchool.weightOfOrientation; //get the direction that nearby fish are generally facing
 		
-		Vector3 attractionDirection = fishSchool.GetAverageFishPosition() - transform.position;
-		Vector3 attraction = attractionDirection.normalized *fishSchool.weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
-		
-		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction +fishSchool.GetLureVector(this);
-		
+		Vector3 attractionDirection = fishSchool.GetAverageFishPosition () - transform.position;
+		Vector3 attraction = attractionDirection.normalized * fishSchool.weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
+		Vector3 lure = fishSchool.GetLureVector (this);
+
+		Vector3 boundary = Vector3.zero;
 		//if fish is above water or below ground, turn it up/down
-		if (fishSchool.IsFishBelowGround(this)) {
-			idealDirection += Vector3.down * fishSchool.GetOutOfBoundsWeight();
-		} else if (fishSchool.IsFishAboveWater(this)){
-			idealDirection += Vector3.up * fishSchool.GetOutOfBoundsWeight();
+		if (fishSchool.IsFishTooLow (this)) {
+			boundary = Vector3.up * fishSchool.GetOutOfBoundsWeight ();
+		} else if (fishSchool.IsFishTooHigh (this)) {
+			boundary = Vector3.down * fishSchool.GetOutOfBoundsWeight ();
 		}
-		
+
+		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction + lure + boundary;
+
 		newDirection = Vector3.Lerp (transform.forward, idealDirection, fishSchool.interval);
 		previousDirection = transform.forward;
 		directionTimer = 0;
