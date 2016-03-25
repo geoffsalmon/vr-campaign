@@ -1,12 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[System.Serializable]
+public class FishType{
+	public GameObject prefab;
+	public int probability=1;
+	public float speed=4;
+	public float turnSpeed = 1;
+
+	public FishType(GameObject prefab){
+		this.prefab = prefab;
+	}
+}
+
 public class FishSchool : MonoBehaviour
 {
-	public GameObject fishPrefab;
+	public FishType[] fishTypes;
 	public int fishCount = 200;
 	public float interval = 0.5f; //this is how often each fish will re-orient itself
-	public float baseSpeed = 4; //fish swim speed
 	
 	//for more info on radii and weights see this academic paper:
 	//"Simulating The Collective Behavior of Schooling Fish With A Discrete Stochastic Model" 2006
@@ -29,10 +40,11 @@ public class FishSchool : MonoBehaviour
 	
 	void Start ()
 	{
-		if (fishPrefab == null) {
+		if (fishTypes.Length==0l) {
 			string defaultPrefab = "test fish";
-			Debug.Log ("Swarm was given no fish prefab. Using default '" + defaultPrefab + "'.");
-			fishPrefab = Resources.Load (defaultPrefab) as GameObject;
+			Debug.LogWarning ("fish school was given no fish prefab. Using default '" + defaultPrefab + "'.");
+			GameObject fishPrefab = Resources.Load (defaultPrefab) as GameObject;
+			fishTypes=new FishType[1]{new FishType(fishPrefab)};
 		}
 
 		GetFishLures ();
@@ -88,6 +100,23 @@ public class FishSchool : MonoBehaviour
 		boundsOfOrientation = new Bounds (Vector3.zero, new Vector3 (radiusOfOrientation, radiusOfOrientation, radiusOfOrientation));
 		boundsOfRepulsion = new Bounds (Vector3.zero, new Vector3 (radiusOfRepulsion, radiusOfRepulsion, radiusOfRepulsion));
 	}
+
+	private FishType GetRandomFishType(){
+		int weightTotal = 0;
+		foreach (FishType ft in fishTypes)
+			weightTotal += ft.probability;
+
+		int a = Random.Range (0, weightTotal);
+		FishType fishType = fishTypes [0];
+		foreach (FishType ft in fishTypes) {
+			if(a<ft.probability){
+				fishType=ft;
+				break;
+			}
+			a -= ft.probability;
+		}
+		return fishType;
+	}
 	
 	private void MakeFishies ()
 	{		
@@ -96,12 +125,15 @@ public class FishSchool : MonoBehaviour
 			Vector3 startPosition = gameObject.transform.position + new Vector3 (Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth));
-			GameObject fishGameObject = Instantiate (fishPrefab, startPosition, Random.rotation) as GameObject;
+
+			FishType fishType=GetRandomFishType();
+
+			GameObject fishGameObject = Instantiate (fishType.prefab, startPosition, Random.rotation) as GameObject;
 			fishGameObject.transform.parent = fishContainer.transform;
 			Fish fish = fishGameObject.GetComponent<Fish> ();
 			if (fish == null)
 				fish = fishGameObject.AddComponent<Fish> ();
-			fish.Setup (this, baseSpeed);
+			fish.Setup (this, fishType);
 			fishies [i] = fish;
 			octree.Add (fishies [i], fishBounds);
 		}
