@@ -1,18 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class FishType{
-	public GameObject prefab;
-	public int probability=1;
-	public float speed=4;
-	public float turnSpeed = 1;
-
-	public FishType(GameObject prefab){
-		this.prefab = prefab;
-	}
-}
-
 public class FishSchool : MonoBehaviour
 {
 	public FishType[] fishTypes;

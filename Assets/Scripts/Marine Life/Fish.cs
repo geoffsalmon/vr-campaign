@@ -4,7 +4,6 @@ using System.Collections;
 public class Fish : MonoBehaviour
 {
 	private float speed;
-	private float turnSpeed;
 	private FishSchool fishSchool;
 	private Vector3 previousDirection, newDirection;
 	private float directionTimer = 0;
@@ -13,7 +12,6 @@ public class Fish : MonoBehaviour
 	{
 		this.fishSchool = fishSchool;
 		speed = fishType.speed;
-		turnSpeed = fishType.turnSpeed;
 		ChangeColor (new Color (0.3f, 0.3f, 0.5f));
 
 		StartCoroutine (Cycle ());
@@ -69,7 +67,7 @@ public class Fish : MonoBehaviour
 
 		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction + lure + boundary;
 
-		newDirection = Vector3.Lerp (transform.forward, idealDirection*turnSpeed, fishSchool.interval);
+		newDirection = idealDirection;
 		previousDirection = transform.forward;
 		directionTimer = 0;
 	}
