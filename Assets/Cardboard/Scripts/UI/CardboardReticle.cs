@@ -83,7 +83,7 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   public void OnGazeDisabled() {
 
   }
-  public float targetTime = 3.0f;
+  public float targetTime = 0.1f;
   /// Called when the user is looking on a valid GameObject. This can be a 3D
   /// or UI element.
   ///
@@ -92,7 +92,7 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   /// point of the ray sent from the camera on the object.
   public void OnGazeStart(Camera camera, GameObject targetObject, Vector3 intersectionPosition) {
     SetGazeTarget(intersectionPosition);
-	targetTime = 3.0f;
+	targetTime = 0.1f;
     Debug.Log("STARTED");
   }
 
@@ -104,16 +104,16 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   /// ray sent from the camera on the object.
   public void OnGazeStay(Camera camera, GameObject targetObject, Vector3 intersectionPosition) {
     SetGazeTarget(intersectionPosition);
-	Debug.Log("ON: " + targetObject.name + " On Layer: " + targetObject.layer + " Parent: "+ camera.transform.parent.parent.parent);
+	Debug.Log("ON: " + targetObject.transform.parent.name + " On Layer: " + targetObject.layer + " Parent: "+ camera.transform.parent);
 		targetTime -= Time.deltaTime;
 		if(targetTime < 0){
 			if(targetObject.layer == 9){ // "SchoolOfFish"
 				Destroy(targetObject);
 			}
-			if(targetObject.layer == 10){ // "BigFishTransport"
-				Debug.Log("WE GOT A BIG ONE!!!!!!! WEEEEEEEEEEEEEE....");
-				camera.transform.parent.parent.parent = targetObject.transform;
-			}
+//			if(targetObject.layer == 10){ // "BigFishTransport"
+//				Debug.Log("WE GOT A BIG ONE!!!!!!! WEEEEEEEEEEEEEE....");
+//				camera.transform.parent.parent.parent = targetObject.transform;
+//			}
 			reticleDistanceInMeters = kReticleDistanceMax;
 			reticleInnerAngle = kReticleMinInnerAngle;
 			reticleOuterAngle = kReticleMinOuterAngle;
@@ -132,6 +132,7 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
     reticleInnerAngle = kReticleMinInnerAngle;
     reticleOuterAngle = kReticleMinOuterAngle;
 	Debug.Log("ENDED");
+	targetTime = 0.1f;
   }
 
   /// Called when the Cardboard trigger is initiated. This is practically when
