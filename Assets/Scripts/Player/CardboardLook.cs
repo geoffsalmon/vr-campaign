@@ -18,7 +18,7 @@ using UnityEngine.EventSystems;
 
 [AddComponentMenu("Cardboard/UI/CardboardReticle")]
 [RequireComponent(typeof(Renderer))]
-public class CardboardReticle : MonoBehaviour, ICardboardPointer {
+public class CardboardLook : MonoBehaviour, ICardboardPointer {
   /// Number of segments making the reticle circle.
   public int reticleSegments = 20;
 
@@ -53,6 +53,8 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   // before distance multiplication.
   private float reticleInnerDiameter = 0.0f;
   private float reticleOuterDiameter = 0.0f;
+
+  public float timer = 1;
 
   void Start () {
     CreateReticleVertices();
@@ -102,6 +104,14 @@ public class CardboardReticle : MonoBehaviour, ICardboardPointer {
   /// ray sent from the camera on the object.
   public void OnGazeStay(Camera camera, GameObject targetObject, Vector3 intersectionPosition) {
     SetGazeTarget(intersectionPosition);
+    timer -= Time.deltaTime;
+    if(timer<0){
+    	Destroy(targetObject);
+    	timer = 1;
+		reticleDistanceInMeters = kReticleDistanceMax;
+    	reticleInnerAngle = kReticleMinInnerAngle;
+    	reticleOuterAngle = kReticleMinOuterAngle;
+    }
   }
 
   /// Called when the user's look no longer intersects an object previously
