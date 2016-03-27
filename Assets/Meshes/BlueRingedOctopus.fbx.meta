@@ -1,0 +1,188 @@
+fileFormatVersion: 2
+guid: adf5b341d8416499ab4b2b7ceaaa7b70
+timeCreated: 1459112211
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: 'Arm 0 Root '
+    100002: Arm 0 Root .001
+    100004: Arm 0 Root .002
+    100006: Arm 0 Root .003
+    100008: Arm 0 Root .004
+    100010: Arm 0 Root .005
+    100012: Arm 0 Root .006
+    100014: Arm 0 Root .007
+    100016: Arm 0_1
+    100018: Arm 0_1.001
+    100020: Arm 0_1.002
+    100022: Arm 0_1.003
+    100024: Arm 0_1.004
+    100026: Arm 0_1.005
+    100028: Arm 0_1.006
+    100030: Arm 0_1.007
+    100032: Arm 0_2
+    100034: Arm 0_2.001
+    100036: Arm 0_2.002
+    100038: Arm 0_2.003
+    100040: Arm 0_2.004
+    100042: Arm 0_2.005
+    100044: Arm 0_2.006
+    100046: Arm 0_2.007
+    100048: Arm 0_3
+    100050: Arm 0_3.001
+    100052: Arm 0_3.002
+    100054: Arm 0_3.003
+    100056: Arm 0_3.004
+    100058: Arm 0_3.005
+    100060: Arm 0_3.006
+    100062: Arm 0_3.007
+    100064: Arm 0_4
+    100066: Arm 0_4.001
+    100068: Arm 0_4.001_end
+    100070: Arm 0_4.002
+    100072: Arm 0_4.002_end
+    100074: Arm 0_4.003
+    100076: Arm 0_4.003_end
+    100078: Arm 0_4.004
+    100080: Arm 0_4.004_end
+    100082: Arm 0_4.005
+    100084: Arm 0_4.005_end
+    100086: Arm 0_4.006
+    100088: Arm 0_4.006_end
+    100090: Arm 0_4.007
+    100092: Arm 0_4.007_end
+    100094: Arm 0_4_end
+    100096: Armature
+    100098: //RootNode
+    100100: Head Bone
+    100102: Head Bone_end
+    100104: Octopus Full Sculpt
+    100106: Root
+    100108: Tentacle Control Bone
+    100110: Tentacle Control Bone_end
+    400000: 'Arm 0 Root '
+    400002: Arm 0 Root .001
+    400004: Arm 0 Root .002
+    400006: Arm 0 Root .003
+    400008: Arm 0 Root .004
+    400010: Arm 0 Root .005
+    400012: Arm 0 Root .006
+    400014: Arm 0 Root .007
+    400016: Arm 0_1
+    400018: Arm 0_1.001
+    400020: Arm 0_1.002
+    400022: Arm 0_1.003
+    400024: Arm 0_1.004
+    400026: Arm 0_1.005
+    400028: Arm 0_1.006
+    400030: Arm 0_1.007
+    400032: Arm 0_2
+    400034: Arm 0_2.001
+    400036: Arm 0_2.002
+    400038: Arm 0_2.003
+    400040: Arm 0_2.004
+    400042: Arm 0_2.005
+    400044: Arm 0_2.006
+    400046: Arm 0_2.007
+    400048: Arm 0_3
+    400050: Arm 0_3.001
+    400052: Arm 0_3.002
+    400054: Arm 0_3.003
+    400056: Arm 0_3.004
+    400058: Arm 0_3.005
+    400060: Arm 0_3.006
+    400062: Arm 0_3.007
+    400064: Arm 0_4
+    400066: Arm 0_4.001
+    400068: Arm 0_4.001_end
+    400070: Arm 0_4.002
+    400072: Arm 0_4.002_end
+    400074: Arm 0_4.003
+    400076: Arm 0_4.003_end
+    400078: Arm 0_4.004
+    400080: Arm 0_4.004_end
+    400082: Arm 0_4.005
+    400084: Arm 0_4.005_end
+    400086: Arm 0_4.006
+    400088: Arm 0_4.006_end
+    400090: Arm 0_4.007
+    400092: Arm 0_4.007_end
+    400094: Arm 0_4_end
+    400096: Armature
+    400098: //RootNode
+    400100: Head Bone
+    400102: Head Bone_end
+    400104: Octopus Full Sculpt
+    400106: Root
+    400108: Tentacle Control Bone
+    400110: Tentacle Control Bone_end
+    4300000: Octopus Full Sculpt
+    7400000: Armature|Idle
+    9500000: //RootNode
+    11100000: //RootNode
+    13700000: Octopus Full Sculpt
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
