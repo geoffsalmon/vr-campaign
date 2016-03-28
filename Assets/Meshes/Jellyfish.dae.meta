@@ -1,45 +1,16 @@
 fileFormatVersion: 2
-guid: 22b479a98e02f43a0a601c80f5c4af25
-timeCreated: 1459117841
+guid: c022d290001d7a940913c1bd3cbeb3c6
+timeCreated: 1459118914
 licenseType: Free
 ModelImporter:
-  serializedVersion: 19
+  serializedVersion: 18
   fileIDToRecycleName:
-    100000: Basic_Body
-    100002: Clown_fish_Body
-    100004: //RootNode
-    100006: Turtle_Limbs
-    100008: Turtle_Shell_Base
-    100010: Turtle_Shell_Sculpt
-    100012: Turtle_Unified
-    400000: Basic_Body
-    400002: Clown_fish_Body
-    400004: //RootNode
-    400006: Turtle_Limbs
-    400008: Turtle_Shell_Base
-    400010: Turtle_Shell_Sculpt
-    400012: Turtle_Unified
-    2300000: Basic_Body
-    2300002: Clown_fish_Body
-    2300004: Turtle_Limbs
-    2300006: Turtle_Shell_Base
-    2300008: Turtle_Shell_Sculpt
-    2300010: Turtle_Unified
-    3300000: Basic_Body
-    3300002: Clown_fish_Body
-    3300004: Turtle_Limbs
-    3300006: Turtle_Shell_Base
-    3300008: Turtle_Shell_Sculpt
-    3300010: Turtle_Unified
-    4300000: Turtle_Unified
-    4300002: Turtle_Limbs
-    4300004: Turtle_Shell_Sculpt
-    4300006: Turtle_Shell_Base
-    4300008: Clown_fish_Body
-    4300010: Basic_Body
-    7400000: Default Take
+    100000: //RootNode
+    400000: //RootNode
+    2300000: //RootNode
+    3300000: //RootNode
+    4300000: Jelly_Cap
     9500000: //RootNode
-    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
@@ -47,7 +18,6 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
     optimizeGameObjects: 0
     motionNodeName: 
     animationImportErrors: 
@@ -55,9 +25,9 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: 0.5
-    animationPositionError: 0.5
-    animationScaleError: 0.5
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
     animationWrapMode: 0
     extraExposedTransformPaths: []
     clipAnimations: []
@@ -81,24 +51,25 @@ ModelImporter:
     useFileScale: 1
   tangentSpace:
     normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 3
+    tangentImportMode: 1
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
     human: []
     skeleton: []
-    armTwist: 0.5
-    foreArmTwist: 0.5
-    upperLegTwist: 0.5
-    legTwist: 0.5
-    armStretch: 0.05
-    legStretch: 0.05
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
     feetSpacing: 0
     rootMotionBoneName: 
     hasTranslationDoF: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 1
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
