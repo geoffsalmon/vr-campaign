@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Manages moving from one reef to another and instantiates the reefs and tunnels inbetween as needed.
 public class VisitReefs : MonoBehaviour {
 	// Body is the object moved during transits
 	public GameObject Body;
