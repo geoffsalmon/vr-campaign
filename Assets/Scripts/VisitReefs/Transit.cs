@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-// Describes the path of the movement and calculates progress of the movement over time.
-// Sends an event with progress so listeners can react. The flight is split into 3 sections:
-//   1) Entering which moves the Body from it's initial position, stored as StartPosition, to the set EnterPosition
-//   2) Flying through tunnel from EnterPosition to ExitPosition
-//   3) Leaving out of the tunnel from ExitPosition to FinalPosition
+// Describes the start and end locations for the path between reefs. Calculates progress of the movement over time.
+// Sends an event with progress so listeners can react. The movement is split into 3 stages:
+//   1) Entering the tunnel moving from the Body's initial position, StartPosition, to EnterPosition
+//   2) Travelling through tunnel from EnterPosition to ExitPosition
+//   3) Exiting out of the tunnel moving from ExitPosition to FinalPosition
 //
-// A separate float (EnterProgress, Progress, ExitProgress) is incremented from 0 to 1 for each stage.
-// Other scripts listen to this progress and animate the tunnel and movement.
+// A separate progress float (EnterProgress, Progress, ExitProgress) is incremented
+// from 0 to 1 for each stage based on the amount of time configured for each stage.
+// Other scripts listen to this progress and can draw the tunnel and move the player and fish.
 public class Transit : MonoBehaviour {
 
 	public GameObject Body;
@@ -27,6 +28,8 @@ public class Transit : MonoBehaviour {
 	public enum TransitState { Entering, InProgress, Exiting, Finished };
 	public TransitState State { get; private set; }
 
+	// A delegate and static event to notify other scripts of the transit progress. This
+	// assumes there is a single active Transit script at any one time.
 	public delegate void UpdateTransit(Transit transit, TransitState state, float progress);
 	public static event UpdateTransit OnTransit;
 
@@ -85,14 +88,5 @@ public class Transit : MonoBehaviour {
 		Debug.DrawLine(StartPosition, EnterPosition, Color.red);
 		Debug.DrawLine(EnterPosition, ExitPosition, Color.blue);
 		Debug.DrawLine(ExitPosition, FinalPosition, Color.green);
-	}
-
-	void OnDrawGizmosSelected() {
-		Gizmos.color = Color.red;
-		Gizmos.DrawLine(StartPosition, EnterPosition);
-		Gizmos.color = Color.blue;
-		Gizmos.DrawLine(EnterPosition, ExitPosition);
-		Gizmos.color = Color.green;
-		Gizmos.DrawLine(ExitPosition, FinalPosition);
 	}
 }
