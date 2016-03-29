@@ -99,6 +99,7 @@ public class CoralDecorator : MonoBehaviour
 				if(radius.sqrMagnitude>biggestDistance){
 					biggestDistance=radius.sqrMagnitude;
 					farthestPosition=hit.point;
+					lastNormal=hit.normal;
 				}
 			}
 		}
