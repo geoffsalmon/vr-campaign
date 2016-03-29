@@ -178,6 +178,7 @@ MonoBehaviour:
     speed: 4
   fishCount: 100
   interval: .5
+  lureCode: 0
   radiusOfOrientation: 60
   radiusOfRepulsion: 4
   weightOfRepulsion: 1.5
@@ -216,6 +217,7 @@ GameObject:
   - 4: {fileID: 714043990}
   - 114: {fileID: 714043989}
   - 114: {fileID: 714043988}
+  - 114: {fileID: 714043991}
   m_Layer: 0
   m_Name: player
   m_TagString: Untagged
@@ -264,6 +266,17 @@ Transform:
   - {fileID: 962888499}
   m_Father: {fileID: 0}
   m_RootOrder: 1
+--- !u!114 &714043991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 714043987}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 24ed659cf7a61459496f7d25abb91852, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &747169736
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,6 +322,7 @@ MonoBehaviour:
     speed: 4
   fishCount: 100
   interval: .5
+  lureCode: 0
   radiusOfOrientation: 60
   radiusOfRepulsion: 4
   weightOfRepulsion: 1.5
@@ -456,6 +470,7 @@ MonoBehaviour:
     speed: 4
   fishCount: 100
   interval: .5
+  lureCode: 0
   radiusOfOrientation: 60
   radiusOfRepulsion: 4
   weightOfRepulsion: 1.5
@@ -517,6 +532,7 @@ MonoBehaviour:
     speed: 4
   fishCount: 100
   interval: .5
+  lureCode: 0
   radiusOfOrientation: 60
   radiusOfRepulsion: 4
   weightOfRepulsion: 1.5
@@ -687,6 +703,7 @@ MonoBehaviour:
     speed: 4
   fishCount: 100
   interval: .5
+  lureCode: 0
   radiusOfOrientation: 60
   radiusOfRepulsion: 4
   weightOfRepulsion: 1.5
