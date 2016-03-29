@@ -58,7 +58,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 115802}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.26999998, y: 1.01999998, z: 5.07000017}
+  m_LocalPosition: {x: -1.27, y: 1.02, z: 5.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 489370}
@@ -71,9 +71,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 167870}
-  m_LocalRotation: {x: -1.15182409e-07, y: .707228959, z: -.70698458, w: -1.15222228e-07}
-  m_LocalPosition: {x: -.0859570503, y: .389999986, z: -.730000019}
-  m_LocalScale: {x: .122544184, y: .122544065, z: .12254405}
+  m_LocalRotation: {x: -0.00000011518241, y: 0.70722896, z: -0.7069846, w: -0.00000011522223}
+  m_LocalPosition: {x: -0.08595705, y: 0.39, z: -0.73}
+  m_LocalScale: {x: 0.122544184, y: 0.122544065, z: 0.12254405}
   m_Children: []
   m_Father: {fileID: 451200}
   m_RootOrder: 0
@@ -83,9 +83,9 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 137394}
-  m_LocalRotation: {x: .707106829, y: 0, z: 0, w: .707106709}
-  m_LocalPosition: {x: -.0859570503, y: .389999986, z: -.730000019}
-  m_LocalScale: {x: .122544184, y: .122544065, z: .122544065}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071067}
+  m_LocalPosition: {x: -0.08595705, y: 0.39, z: -0.73}
+  m_LocalScale: {x: 0.122544184, y: 0.122544065, z: 0.122544065}
   m_Children: []
   m_Father: {fileID: 451200}
   m_RootOrder: 1
@@ -107,8 +107,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
@@ -131,8 +133,10 @@ MeshRenderer:
   m_ProbeAnchor: {fileID: 0}
   m_ScaleInLightmap: 1
   m_PreserveUVs: 1
+  m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_AutoUVMaxDistance: .5
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0

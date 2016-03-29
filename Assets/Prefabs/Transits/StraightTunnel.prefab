@@ -59,7 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 639851af105cc4fe9979e609c6322a08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TubeMaterial: {fileID: 0}
+  TubeMaterial: {fileID: 2100000, guid: 4f81f33c7162e44a5b0d013765767f17, type: 2}
 --- !u!114 &11480474
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -8,25 +8,25 @@ SceneSettings:
   m_PVSPortalsArray: []
   m_OcclusionBakeSettings:
     smallestOccluder: 5
-    smallestHole: .25
+    smallestHole: 0.25
     backfaceThreshold: 100
 --- !u!104 &2
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 6
   m_Fog: 0
-  m_FogColor: {r: .215686277, g: .65882355, b: .917647064, a: 1}
+  m_FogColor: {r: 0.21568628, g: 0.65882355, b: 0.91764706, a: 1}
   m_FogMode: 3
-  m_FogDensity: .0299999993
+  m_FogDensity: 0.03
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: .211999997, g: .226999998, b: .259000003, a: 1}
-  m_AmbientEquatorColor: {r: .114, g: .125, b: .133000001, a: 1}
-  m_AmbientGroundColor: {r: .0469999984, g: .0430000015, b: .0350000001, a: 1}
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
-  m_HaloStrength: .5
+  m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
   m_HaloTexture: {fileID: 0}
@@ -40,7 +40,7 @@ RenderSettings:
 --- !u!157 &3
 LightmapSettings:
   m_ObjectHideFlags: 0
-  serializedVersion: 5
+  serializedVersion: 6
   m_GIWorkflowMode: 0
   m_LightmapsMode: 1
   m_GISettings:
@@ -66,7 +66,7 @@ LightmapSettings:
     m_FinalGather: 0
     m_FinalGatherRayCount: 1024
     m_ReflectionCompression: 2
-  m_LightmapSnapshot: {fileID: 0}
+  m_LightingDataAsset: {fileID: 0}
   m_RuntimeCPUUsage: 25
 --- !u!196 &4
 NavMeshSettings:
@@ -74,15 +74,15 @@ NavMeshSettings:
   m_ObjectHideFlags: 0
   m_BuildSettings:
     serializedVersion: 2
-    agentRadius: .5
+    agentRadius: 0.5
     agentHeight: 2
     agentSlope: 45
-    agentClimb: .400000006
+    agentClimb: 0.4
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     accuratePlacement: 0
     minRegionArea: 2
-    cellSize: .166666672
+    cellSize: 0.16666667
     manualCellSize: 0
   m_NavMeshData: {fileID: 0}
 --- !u!1 &354585219
@@ -110,7 +110,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 1
-  m_Color: {r: 1, g: .956862748, b: .839215696, a: 1}
+  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -119,8 +119,9 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_Strength: 1
-    m_Bias: .0500000007
-    m_NormalBias: .400000006
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
@@ -139,12 +140,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 354585219}
-  m_LocalRotation: {x: .408217937, y: -.234569728, z: .109381676, w: .875426054}
-  m_LocalPosition: {x: 5.88427925, y: .525502682, z: -1.79947793}
+  m_LocalRotation: {x: 0.40821794, y: -0.23456973, z: 0.109381676, w: 0.87542605}
+  m_LocalPosition: {x: 5.8842793, y: 0.5255027, z: -1.7994779}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1147169537}
   m_RootOrder: 0
+<<<<<<< HEAD:Assets/Scenes/Test Scenes/fish3.unity
+=======
 --- !u!1 &440669759
 GameObject:
   m_ObjectHideFlags: 0
@@ -207,6 +210,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1595440913}
   m_RootOrder: 2
+>>>>>>> master:Assets/Scenes/Stuart Tests/fish3.unity
 --- !u!1 &714043987
 GameObject:
   m_ObjectHideFlags: 0
@@ -259,12 +263,15 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 714043987}
-  m_LocalRotation: {x: 0, y: -.707106829, z: 0, w: .707106709}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071067}
   m_LocalPosition: {x: 80, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 962888499}
   m_Father: {fileID: 0}
+<<<<<<< HEAD:Assets/Scenes/Test Scenes/fish3.unity
+  m_RootOrder: 1
+=======
   m_RootOrder: 1
 --- !u!114 &714043991
 MonoBehaviour:
@@ -339,6 +346,7 @@ MonoBehaviour:
     heightGameObject: {fileID: 0}
     heightTerrain: {fileID: 0}
     heightPadding: 0
+>>>>>>> master:Assets/Scenes/Stuart Tests/fish3.unity
 --- !u!1 &962888498
 GameObject:
   m_ObjectHideFlags: 0
@@ -400,14 +408,14 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: .215686277, g: .65882355, b: .917647064, a: .0196078438}
+  m_BackGroundColor: {r: 0.21568628, g: 0.65882355, b: 0.91764706, a: 0.019607844}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
-  near clip plane: .300000012
+  near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -423,8 +431,10 @@ Camera:
   m_HDR: 0
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
-  m_StereoSeparation: .0219999999
+  m_StereoSeparation: 0.022
   m_StereoMirrorMode: 0
+<<<<<<< HEAD:Assets/Scenes/Test Scenes/fish3.unity
+=======
 --- !u!1 &1073882579
 GameObject:
   m_ObjectHideFlags: 0
@@ -549,6 +559,7 @@ MonoBehaviour:
     heightGameObject: {fileID: 0}
     heightTerrain: {fileID: 0}
     heightPadding: 0
+>>>>>>> master:Assets/Scenes/Stuart Tests/fish3.unity
 --- !u!1 &1147169536
 GameObject:
   m_ObjectHideFlags: 0
@@ -571,12 +582,14 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1147169536}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.88427925, y: 2.47449732, z: 1.79947793}
+  m_LocalPosition: {x: -5.8842793, y: 2.4744973, z: 1.7994779}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 354585221}
   - {fileID: 1620149998}
   m_Father: {fileID: 0}
+<<<<<<< HEAD:Assets/Scenes/Test Scenes/fish3.unity
+=======
   m_RootOrder: 2
 --- !u!1 &1595440912
 GameObject:
@@ -609,6 +622,7 @@ Transform:
   - {fileID: 1073882580}
   - {fileID: 1138997306}
   m_Father: {fileID: 0}
+>>>>>>> master:Assets/Scenes/Stuart Tests/fish3.unity
   m_RootOrder: 3
 --- !u!1 &1620149997
 GameObject:
@@ -632,8 +646,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1620149997}
-  m_LocalRotation: {x: .0885214061, y: -.907673299, z: -.330366105, w: -.243210539}
-  m_LocalPosition: {x: 5.88427925, y: .525502682, z: -1.79947793}
+  m_LocalRotation: {x: 0.088521406, y: -0.9076733, z: -0.3303661, w: -0.24321054}
+  m_LocalPosition: {x: 5.8842793, y: 0.5255027, z: -1.7994779}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1147169537}
@@ -647,8 +661,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 6
   m_Type: 1
-  m_Color: {r: 1, g: .956862748, b: .839215696, a: 1}
-  m_Intensity: 2.06999993
+  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Intensity: 2.07
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -656,8 +670,9 @@ Light:
     m_Type: 2
     m_Resolution: -1
     m_Strength: 1
-    m_Bias: .0500000007
-    m_NormalBias: .400000006
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
   m_Cookie: {fileID: 0}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
@@ -680,7 +695,7 @@ GameObject:
   - 4: {fileID: 1667340229}
   - 114: {fileID: 1667340228}
   m_Layer: 0
-  m_Name: school1
+  m_Name: school
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -698,12 +713,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fishTypes:
+<<<<<<< HEAD:Assets/Scenes/Test Scenes/fish3.unity
+  - prefab: {fileID: 168626, guid: 89255d23f479e4e86b70302757874a59, type: 2}
+    probability: 10
+=======
   - prefab: {fileID: 161746, guid: e5d4796bfbe2747efbdfa4357800f800, type: 2}
     count: 0
+>>>>>>> master:Assets/Scenes/Stuart Tests/fish3.unity
     speed: 4
+<<<<<<< HEAD
+  - prefab: {fileID: 141036, guid: 91a8fde0385f34daf9ad95df2d882827, type: 2}
+    probability: 1
+    speed: 6
+  fishCount: 200
+  interval: 0.5
+=======
   fishCount: 100
   interval: .5
   lureCode: 0
+>>>>>>> master
   radiusOfOrientation: 60
   radiusOfRepulsion: 4
   weightOfRepulsion: 1.5
@@ -727,11 +755,11 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1667340227}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: .621767044, y: -7.99103451, z: 8.71669006}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1595440913}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
 --- !u!1 &1957463073
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,7 +806,7 @@ MonoBehaviour:
   m_SubmitButton: Submit
   m_CancelButton: Cancel
   m_InputActionsPerSecond: 10
-  m_RepeatDelay: .5
+  m_RepeatDelay: 0.5
   m_ForceModuleActive: 0
 --- !u!114 &1957463076
 MonoBehaviour:
