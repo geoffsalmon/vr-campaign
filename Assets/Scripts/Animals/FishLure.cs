@@ -26,6 +26,7 @@ public class LureSetting{
 
 public class FishLure : MonoBehaviour {
 	public LureSetting[] lureSettings;
+	public int lureCode=0;
 	private int index=0;
 	private float timer = 0;
 

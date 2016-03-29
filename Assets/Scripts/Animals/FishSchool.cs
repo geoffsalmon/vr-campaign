@@ -6,6 +6,7 @@ public class FishSchool : MonoBehaviour
 	public FishType[] fishTypes;
 	public int fishCount = 200;
 	public float interval = 0.5f; //this is how often each fish will re-orient itself
+	public int lureCode = 0;
 	
 	//for more info on radii and weights see this academic paper:
 	//"Simulating The Collective Behavior of Schooling Fish With A Discrete Stochastic Model" 2006
@@ -25,10 +26,12 @@ public class FishSchool : MonoBehaviour
 	private Bounds fishBounds;
 	private Bounds boundsOfOrientation, boundsOfRepulsion;
 	private BoundsOctree<Fish> octree;
+	private int nextFishWeightCounter=0;
+	private int nextFishIndex=0;
 	
 	void Start ()
 	{
-		if (fishTypes.Length==0l) {
+		if (fishTypes.Length==0) {
 			string defaultPrefab = "test fish";
 			Debug.LogWarning ("fish school was given no fish prefab. Using default '" + defaultPrefab + "'.");
 			GameObject fishPrefab = Resources.Load (defaultPrefab) as GameObject;
@@ -46,8 +49,16 @@ public class FishSchool : MonoBehaviour
 	}
 
 	private FishLure[] GetFishLures(){
-		if(fishLures==null)
-			fishLures = FindObjectsOfType<FishLure> ();
+		//fish school only considers lures with a matching lureCode, or if fishSchool.lureCode==0, all lures.
+		if (fishLures == null) {
+			ArrayList lureArrayList=new ArrayList();
+			foreach(FishLure lure in FindObjectsOfType<FishLure>())
+				if(lureCode==0 || (lure.lureCode==lureCode))
+					lureArrayList.Add (lure);
+
+			fishLures = new FishLure[lureArrayList.Count];
+			lureArrayList.CopyTo(fishLures);
+		}
 		return fishLures;
 	}
 
@@ -89,21 +100,15 @@ public class FishSchool : MonoBehaviour
 		boundsOfRepulsion = new Bounds (Vector3.zero, new Vector3 (radiusOfRepulsion, radiusOfRepulsion, radiusOfRepulsion));
 	}
 
-	private FishType GetRandomFishType(){
-		int weightTotal = 0;
-		foreach (FishType ft in fishTypes)
-			weightTotal += ft.probability;
-
-		int a = Random.Range (0, weightTotal);
-		FishType fishType = fishTypes [0];
-		foreach (FishType ft in fishTypes) {
-			if(a<ft.probability){
-				fishType=ft;
-				break;
-			}
-			a -= ft.probability;
+	private FishType GetNextFishType(){
+		FishType fishType = fishTypes [nextFishIndex];
+		nextFishWeightCounter += 1;
+		if (nextFishWeightCounter > fishType.count) {
+			nextFishWeightCounter=0;
+			nextFishIndex=(nextFishIndex+1)%fishTypes.Length;
 		}
-		return fishType;
+
+		return fishTypes [nextFishIndex];
 	}
 	
 	private void MakeFishies ()
@@ -114,7 +119,7 @@ public class FishSchool : MonoBehaviour
 			                                                                     Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth));
 
-			FishType fishType=GetRandomFishType();
+			FishType fishType=GetNextFishType();
 
 			GameObject fishGameObject = Instantiate (fishType.prefab, startPosition, Random.rotation) as GameObject;
 			fishGameObject.transform.parent = fishContainer.transform;
@@ -165,19 +170,13 @@ public class FishSchool : MonoBehaviour
 	public bool IsFishTooLow (Fish fish)
 	{
 		//where returning false typically means do no extra action
-		bool isBelow= floorBoundary!=null && floorBoundary.IsBreakingRule(fish.gameObject.transform.position);
-		if (isBelow)
-			Debug.Log ("it's below!");
-		return isBelow;
+		return floorBoundary!=null && floorBoundary.IsBreakingRule(fish.gameObject.transform.position);
 	}
 
 	public bool IsFishTooHigh (Fish fish)
 	{
 		//where returning false typically means do no extra action
-		bool isAbove= ceilingBoundary != null && ceilingBoundary.IsBreakingRule(fish.gameObject.transform.position);
-		if (isAbove)
-			Debug.Log ("it's above!");
-		return isAbove;
+		return ceilingBoundary != null && ceilingBoundary.IsBreakingRule(fish.gameObject.transform.position);
 	}
 	
 	public Vector3 GetRepulsionAveragePosition (Fish fish)
