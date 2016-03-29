@@ -32,7 +32,7 @@ public class FishSchool : MonoBehaviour
 	void Start ()
 	{
 		if (fishTypes.Length==0) {
-			string defaultPrefab = "test fish";
+			string defaultPrefab = "test/test fish";
 			Debug.LogWarning ("fish school was given no fish prefab. Using default '" + defaultPrefab + "'.");
 			GameObject fishPrefab = Resources.Load (defaultPrefab) as GameObject;
 			fishTypes=new FishType[1]{new FishType(fishPrefab)};

@@ -12,7 +12,7 @@ public class FPSInfo : MonoBehaviour {
 	private int frameCount;
 
 	void Start () {
-		GameObject prefab = Resources.Load ("Debug Canvas") as GameObject;
+		GameObject prefab = Resources.Load ("test/Debug Canvas") as GameObject;
 		canvas = Instantiate (prefab) as GameObject;
 		text = canvas.transform.GetChild (0).gameObject.GetComponent<Text> ();
 	}
