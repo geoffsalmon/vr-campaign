@@ -15,6 +15,7 @@ public class Fish : MonoBehaviour
 		speed = fishType.speed;
 		waitForSeconds = new WaitForSeconds (fishSchool.interval);
 		ChangeColor (new Color (0.3f, 0.3f, 0.5f));
+		fishType.Verify ();
 
 		StartCoroutine (Cycle ());
 	}
