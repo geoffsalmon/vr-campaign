@@ -76,7 +76,7 @@ public class FishLure : MonoBehaviour {
 	}
 
 	void OnDrawGizmos(){
-			Gizmos.color = lureSettings == null ?Color.green : lureSettings [index].GetGizmoColor();
+			Gizmos.color = lureSettings==null|| lureSettings.Length==0 ?Color.green : lureSettings [index].GetGizmoColor();
 			Gizmos.DrawSphere (transform.position, 1);		
 	}
 }
