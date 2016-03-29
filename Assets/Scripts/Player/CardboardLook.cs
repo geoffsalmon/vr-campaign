@@ -55,7 +55,7 @@ public class CardboardLook : MonoBehaviour, ICardboardPointer {
   private float reticleOuterDiameter = 0.0f;
 
   public float timer = 1;
-
+  public BubbleRespawn _bubbleRespawn;
   void Start () {
     CreateReticleVertices();
 
@@ -106,7 +106,11 @@ public class CardboardLook : MonoBehaviour, ICardboardPointer {
     SetGazeTarget(intersectionPosition);
     timer -= Time.deltaTime;
     if(timer<0){
-    	Destroy(targetObject);
+    	targetObject.GetComponent<BubbleRespawn>().popping();
+    	Debug.Log("POP");
+//    	Destroy(targetObject);
+//    	Debug.Log(targetObject);
+
     	timer = 1;
 		reticleDistanceInMeters = kReticleDistanceMax;
     	reticleInnerAngle = kReticleMinInnerAngle;
