@@ -8,6 +8,9 @@ GameObject:
   serializedVersion: 4
   m_Component:
   - 4: {fileID: 454020}
+  - 114: {fileID: 11477178}
+  - 114: {fileID: 11458244}
+  - 114: {fileID: 11489350}
   m_Layer: 0
   m_Name: CurvedTunnel
   m_TagString: Untagged
@@ -27,6 +30,47 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!114 &11458244
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2cb7ac10127ee41cca5f4fe2bd873c5c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11477178
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2017647e71c2a4081be410f366dfa27a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Body: {fileID: 0}
+  EnterPosition: {x: 0, y: 0, z: 0}
+  ExitPosition: {x: 0, y: 0, z: 0}
+  FinalPosition: {x: 0, y: 0, z: 0}
+  EnterTransitTime: 1
+  InTransitTime: 5
+  ExitTransitTime: 1
+--- !u!114 &11489350
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 119624}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 939f665e9709241559f0213cde095a27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TubeMaterial: {fileID: 2100000, guid: 4f81f33c7162e44a5b0d013765767f17, type: 2}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
