@@ -12,7 +12,7 @@ public class Coral : MonoBehaviour
 		transform.localScale = Vector3.Lerp (minScale, maxScale, Random.Range (0f, 1f));
 		SetColor (GetRandomColor ());
 
-		if (GetComponent<Collider> () != null) {
+		if (!hasGivenColliderWarning && GetComponent<Collider> () != null) {
 			hasGivenColliderWarning=true;
 			Debug.LogWarning("Corals should not have a collider. This wrecks performance, and possibly coral generation code. "+gameObject.name);
 		}
