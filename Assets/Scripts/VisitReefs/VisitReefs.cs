@@ -96,7 +96,6 @@ public class VisitReefs : MonoBehaviour {
 				Vector3 dir = transit.FinalPosition - transit.ExitPosition;
 				dir.Normalize();
 				Vector3 pos = transit.FinalPosition + 4 * dir;
-				pos.y = 0;
 				nextReef.transform.position = pos;
 				// TODO: Rotate reef so it's facing the player
 
@@ -117,7 +116,6 @@ public class VisitReefs : MonoBehaviour {
 
 		// setup transit, from where to where?
 		Vector3 forward = Head.transform.forward;
-		forward.y = 0;
 		forward.Normalize();
 
 		// setup a straight transit
