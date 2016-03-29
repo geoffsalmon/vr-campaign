@@ -25,6 +25,8 @@ public class FishSchool : MonoBehaviour
 	private Bounds fishBounds;
 	private Bounds boundsOfOrientation, boundsOfRepulsion;
 	private BoundsOctree<Fish> octree;
+	private int nextFishWeightCounter=0;
+	private int nextFishIndex=0;
 	
 	void Start ()
 	{
@@ -89,21 +91,15 @@ public class FishSchool : MonoBehaviour
 		boundsOfRepulsion = new Bounds (Vector3.zero, new Vector3 (radiusOfRepulsion, radiusOfRepulsion, radiusOfRepulsion));
 	}
 
-	private FishType GetRandomFishType(){
-		int weightTotal = 0;
-		foreach (FishType ft in fishTypes)
-			weightTotal += ft.probability;
-
-		int a = Random.Range (0, weightTotal);
-		FishType fishType = fishTypes [0];
-		foreach (FishType ft in fishTypes) {
-			if(a<ft.probability){
-				fishType=ft;
-				break;
-			}
-			a -= ft.probability;
+	private FishType GetNextFishType(){
+		FishType fishType = fishTypes [nextFishIndex];
+		nextFishWeightCounter += 1;
+		if (nextFishWeightCounter > fishType.count) {
+			nextFishWeightCounter=0;
+			nextFishIndex=(nextFishIndex+1)%fishTypes.Length;
 		}
-		return fishType;
+
+		return fishTypes [nextFishIndex];
 	}
 	
 	private void MakeFishies ()
@@ -114,7 +110,7 @@ public class FishSchool : MonoBehaviour
 			                                                                     Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth));
 
-			FishType fishType=GetRandomFishType();
+			FishType fishType=GetNextFishType();
 
 			GameObject fishGameObject = Instantiate (fishType.prefab, startPosition, Random.rotation) as GameObject;
 			fishGameObject.transform.parent = fishContainer.transform;
