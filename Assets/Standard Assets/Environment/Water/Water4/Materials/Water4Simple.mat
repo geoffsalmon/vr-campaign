@@ -150,7 +150,11 @@ Material:
       data:
         first:
           name: _WorldLightDir
+<<<<<<< HEAD
         second: {r: 0.013992362, g: -0.1735907, b: -0.9847188, a: 0}
+=======
+        second: {r: .0139923692, g: .173590481, b: .984718502, a: 0}
+>>>>>>> master
       data:
         first:
           name: _Foam
