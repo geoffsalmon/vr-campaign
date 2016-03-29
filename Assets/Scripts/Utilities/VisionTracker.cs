@@ -18,9 +18,11 @@ public class VisionTracker : MonoBehaviour
 	private GameObject player;
 	private float[] lookAtHistory;
 	private int historyIndex=0;
+	private WaitForSeconds waitForSeconds;
 
 	void Start ()
 	{
+		waitForSeconds = new WaitForSeconds (interval);
 		player = Camera.main.gameObject;
 		lookAtHistory= new float[Mathf.CeilToInt(lookAtHistorySeconds/interval)];
 		StartCoroutine (Cycle());
@@ -62,7 +64,7 @@ public class VisionTracker : MonoBehaviour
 			historyIndex++;
 			historyIndex=historyIndex%lookAtHistory.Length;
 
-			yield return new WaitForSeconds (interval);
+			yield return waitForSeconds;
 
 		}
 	}
