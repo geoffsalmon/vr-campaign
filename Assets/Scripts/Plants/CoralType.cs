@@ -9,6 +9,5 @@ public enum CoralDirections{
 public class CoralType {
 	public GameObject prefab;
 	public CoralDirections coralDirection;
-	public Color[] possibleColors;
 	public int likelihood=1;
 }
