@@ -7,11 +7,13 @@ public class Fish : MonoBehaviour
 	private FishSchool fishSchool;
 	private Vector3 previousDirection, newDirection;
 	private float directionTimer = 0;
+	private WaitForSeconds waitForSeconds;
 
 	public void Setup (FishSchool fishSchool, FishType fishType)
 	{
 		this.fishSchool = fishSchool;
 		speed = fishType.speed;
+		waitForSeconds = new WaitForSeconds (fishSchool.interval);
 		ChangeColor (new Color (0.3f, 0.3f, 0.5f));
 
 		StartCoroutine (Cycle ());
@@ -42,7 +44,7 @@ public class Fish : MonoBehaviour
 		while (true) {
 			fishSchool.UpdateOctree (this);
 			ApplyZones ();
-			yield return new WaitForSeconds (fishSchool.interval);
+			yield return waitForSeconds;
 		}
 	}
 	
