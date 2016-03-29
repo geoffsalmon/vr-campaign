@@ -6,4 +6,4 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Test Scenes/TransitTestPeter.unity
+    path: Assets/Scenes/Test Scenes/TransitTest.unity
