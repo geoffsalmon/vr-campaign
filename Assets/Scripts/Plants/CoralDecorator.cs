@@ -88,30 +88,21 @@ public class CoralDecorator : MonoBehaviour
 		Vector3 direction = Random.onUnitSphere;
 		Vector3 infiniteOutside = transform.position + direction * INFINITY;
 		Vector3 inwards = direction * -1;
-		
-		Vector3 position = Vector3.zero;
-		Vector3 iterativePosition = infiniteOutside;
-		RaycastHit hit;
-		int counter = 0;
-		while (true) {
-			if(!Physics.Raycast(iterativePosition,inwards,out hit))
-				break;
-			if(counter>100){
-				Debug.Log ("super counter oops");
-				break;
-			}
-			iterativePosition=hit.point;
-			Debug.Log (iterativePosition+ " new coral="+coralCloneCount+" hit coral="+hit.collider.gameObject.name);
-			counter++;
 
+		//find the point farthest points from the center of the coral decorator that lies on part of this coral decorator
+		//necessary because Physics.RaycastAll does not return the hits in order
+		Vector3 farthestPosition = gameObject.transform.position;
+		float biggestDistance = 0;
+		foreach (RaycastHit hit in Physics.RaycastAll(infiniteOutside,inwards)) {
 			if(IsPartOfThisCoral(hit.collider.gameObject)){
-				position = hit.point;
-				lastNormal = hit.normal;
-				break;
+				Vector3 radius=hit.point-gameObject.transform.position;
+				if(radius.sqrMagnitude>biggestDistance){
+					biggestDistance=radius.sqrMagnitude;
+					farthestPosition=hit.point;
+				}
 			}
 		}
-
-		return position;
+		return farthestPosition;
 	}
 
 	private void SetCoralTransform (GameObject coral, CoralType coralType)
