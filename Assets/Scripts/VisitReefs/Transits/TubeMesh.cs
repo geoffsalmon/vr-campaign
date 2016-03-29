@@ -1,10 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // Generates a tube mesh programatically using code from http://wiki.unity3d.com/index.php/ProceduralPrimitives#C.23_-_Tube
 // This only generates the inside triangles of the tube.
+
+public struct TubePoint
+{
+	public Vector3 position;
+	public Vector3 derivative;
+	public float radius;
+
+	public TubePoint(Vector3 position, Vector3 derivative, float radius) {
+		this.position = position;
+		this.derivative = derivative;
+		this.radius = radius;
+	}
+}
+
 public class TubeMesh {
 
+	// Fills mesh with a single tube with 2 ends, one at y=0 and one at y=1
 	public static void generateTube(Mesh mesh) {
 		mesh.Clear();
 
@@ -109,5 +125,91 @@ public class TubeMesh {
 
 		mesh.RecalculateBounds();
 		mesh.Optimize();
+	}
+
+
+	public static void generateTubes(Mesh mesh, List<TubePoint> points, int numSides = 24) {
+		mesh.Clear();
+		int numVertices = numSides * points.Count;
+
+		Vector3[] vertices = new Vector3[numVertices];
+		Vector3[] normals = new Vector3[numVertices];
+		Vector2[] uvs = new Vector2[numVertices];
+
+		int numFace = numSides * (points.Count - 1);
+		int numTriangles = numFace * 2;
+		int numIndexes = numTriangles * 3;
+		int[] triangles = new int[numIndexes];
+
+		int vert = 0;
+
+		int i;
+		int j;
+		int n;
+		for (i = 0, n = points.Count; i < n; i++) {
+			// make a ring of vertices around each point oriented perpendicular to the derivative
+			TubePoint point = points[i];
+
+			float u = ((float) i) / (n - 1);
+			// sweep a vector around the derivative vector
+			Vector3 firstRadiusVector = Vector3.Cross(point.derivative, Vector3.up).normalized;
+			if (firstRadiusVector.magnitude < 0.00001f) {
+				// what to do if tube is straight up?
+				firstRadiusVector = Vector3.Cross(point.derivative, Vector3.right).normalized;
+			}
+			//Debug.Log("New Ring");
+			for (j = 0; j < numSides; j++) {
+				float angle = 360f * j / numSides;
+				Vector3 radVector = Quaternion.AngleAxis(angle, point.derivative) * firstRadiusVector * point.radius;
+
+				vertices[vert] = radVector + point.position;
+				normals[vert] = -radVector;
+				//Debug.Log("radVector=" + radVector + " vert=" + vertices[vert]);
+				uvs[vert] = new Vector2(u, ((float)j) / numSides);
+				vert++;
+			}
+		}
+		//Debug.Log("Created " + vert + " vertices of " + numVertices);
+
+		int tri = 0;
+		for (i = 0, n = points.Count-1; i < n; i++) {
+			for (j = 0; j < numSides; j++) {
+				int curr = i*numSides + j;
+				int next = i*numSides + ((j+1) % numSides);
+
+				triangles[tri++] = curr;
+				triangles[tri++] = curr + numSides;
+				triangles[tri++] = next + numSides;
+
+				triangles[tri++] = curr;
+				triangles[tri++] = next + numSides;
+				triangles[tri++] = next;
+			}
+		}
+		//Debug.Log("Created " + (tri/3.0f) + " triangles of expected " + numTriangles);
+
+		mesh.vertices = vertices;
+		mesh.normals = normals;
+		mesh.uv = uvs;
+		mesh.triangles = triangles;
+
+		mesh.RecalculateBounds();
+		mesh.Optimize();
+	}
+
+	public static void test(GameObject gameobject) {
+		MeshFilter filter = gameobject.AddComponent<MeshFilter>();
+		List<TubePoint> points = new List<TubePoint>();
+		points.Add(new TubePoint(Vector3.zero, Vector3.right, 1));
+		points.Add(new TubePoint(new Vector3(1f, 0.25f, 0f), new Vector3(1f, 0, 0), 1));
+		points.Add(new TubePoint(new Vector3(2f, -0.25f, 0f), new Vector3(1f, 0, 0), 1));
+		//points.Add(new TubePoint(new Vector3(3f, 0f, 0f), new Vector3(1f, 0, 0), 1));
+
+		TubeMesh.generateTubes(filter.mesh, points, 8);
+
+		MeshRenderer renderer = gameobject.AddComponent<MeshRenderer>();
+		renderer.receiveShadows = false;
+		renderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+		renderer.material.color = Color.red;
 	}
 }

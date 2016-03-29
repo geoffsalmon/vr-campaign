@@ -44,6 +44,8 @@ public class Transit : MonoBehaviour {
 	public float EnterProgress { get; private set; }
 	public float ExitProgress { get; private set; }
 
+	public CubicBezier Curve { get; private set; }
+
 	void Start () {
 		startTime = Time.time;
 		enterTime = startTime + EnterTransitTime;
@@ -57,6 +59,12 @@ public class Transit : MonoBehaviour {
 		Progress = 0;
 		EnterProgress = 0;
 		ExitProgress = 0;
+
+		// Create a curve that can be accessed by anything listening to transit progress
+		// TODO: Does this belong in the Transit object?
+		// TODO: Should this curve, or a separate set of curves include the tunnel entering and exiting part of the transit
+		Curve = new CubicBezier(EnterPosition, 2*EnterPosition - StartPosition + new Vector3(Random.value, Random.value, Random.value) * 4,
+		                        2*ExitPosition - FinalPosition + new Vector3(Random.value, Random.value, Random.value) * 4, ExitPosition);
 	}
 
 	void Update () {
@@ -85,8 +93,22 @@ public class Transit : MonoBehaviour {
 			}
 		}
 
+		/*
 		Debug.DrawLine(StartPosition, EnterPosition, Color.red);
 		Debug.DrawLine(EnterPosition, ExitPosition, Color.blue);
 		Debug.DrawLine(ExitPosition, FinalPosition, Color.green);
+		*/
+
+		/*
+		Vector3 pos0, pos1;
+		pos1 = Curve.position(0);
+		for (float t = 0; t <= 1.0f; t += 0.1f) {
+			pos0 = pos1;
+			pos1 = Curve.position(t);
+			Debug.DrawLine(pos0, pos1, Color.yellow);
+		}
+		pos0 = pos1;
+		pos1 = Curve.position(1);
+		Debug.DrawLine(pos0, pos1, Color.yellow);*/
 	}
 }
