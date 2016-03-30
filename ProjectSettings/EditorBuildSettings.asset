@@ -6,4 +6,4 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Coral2D/Scenes/coral2dScene.unity
+    path: Assets/CoralTest.unity
