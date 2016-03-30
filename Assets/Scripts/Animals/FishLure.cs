@@ -14,14 +14,6 @@ public class LureSetting{
 			sqrRange = range * range;
 		return sqrRange;
 	}
-
-	public Color GetGizmoColor(){
-		return gizmoColor;
-	}
-
-	public void SetGizmoColor(Color newColor){
-		gizmoColor = newColor;
-	}
 }
 
 public class FishLure : MonoBehaviour {
@@ -40,11 +32,6 @@ public class FishLure : MonoBehaviour {
 				minWeight=ls.weight;
 			if(ls.weight>maxWeight)
 				maxWeight=ls.weight;
-		}
-
-		foreach (LureSetting ls in lureSettings) {
-			float ratio=maxWeight==minWeight ? 1 : ls.weight/(maxWeight-minWeight);
-			ls.SetGizmoColor(new Color(1-ratio,ratio,0));
 		}
 	}
 
@@ -76,7 +63,7 @@ public class FishLure : MonoBehaviour {
 	}
 
 	void OnDrawGizmos(){
-			Gizmos.color = lureSettings==null|| lureSettings.Length==0 ?Color.green : lureSettings [index].GetGizmoColor();
+			Gizmos.color = Color.green;
 			Gizmos.DrawSphere (transform.position, 1);		
 	}
 }
