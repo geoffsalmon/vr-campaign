@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class animateOctopus : MonoBehaviour {
+public class Octopus : MonoBehaviour {
 	public Animation anim;
 	// Use this for initialization
 	void Start () {
