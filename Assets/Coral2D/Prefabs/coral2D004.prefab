@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3395004}
   - 23: {fileID: 2310230}
   - 114: {fileID: 11471014}
+  - 114: {fileID: 11454632}
   m_Layer: 0
   m_Name: coral2D004
   m_TagString: Untagged
@@ -25,7 +26,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175616}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0.58, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
@@ -63,6 +64,17 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 175616}
   m_Mesh: {fileID: 4300000, guid: c0865610e788d4d0288cff0bd3d7a70e, type: 3}
+--- !u!114 &11454632
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 175616}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44756418156bd41b19c3bb42b09138a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11471014
 MonoBehaviour:
   m_ObjectHideFlags: 1
