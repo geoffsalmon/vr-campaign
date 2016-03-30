@@ -377,7 +377,7 @@ GameObject:
   - 33: {fileID: 3396782}
   - 23: {fileID: 2335568}
   m_Layer: 0
-  m_Name: coralAndFish
+  m_Name: GuillaumeMetric
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
