@@ -11,7 +11,7 @@ public class CoralDecorator : MonoBehaviour
 	private Vector3 lastNormal;
 	private const int INFINITY = 10000;
 	private static GameObject coralContainer;
-	private static int coralCloneCount=0;
+	private static int coralCloneCount = 0;
 
 	void Start ()
 	{
@@ -77,8 +77,7 @@ public class CoralDecorator : MonoBehaviour
 			GameObject coral = Instantiate (coralType.prefab) as GameObject;
 
 			coralCloneCount++;			
-			coral.name="coral "+coralCloneCount;
-			coral.transform.parent=coralContainer.transform;
+			coral.name = "coral " + coralCloneCount;
 			SetCoralTransform (coral, coralType);
 		}
 	}
@@ -94,12 +93,12 @@ public class CoralDecorator : MonoBehaviour
 		Vector3 farthestPosition = gameObject.transform.position;
 		float biggestDistance = 0;
 		foreach (RaycastHit hit in Physics.RaycastAll(infiniteOutside,inwards)) {
-			if(IsPartOfThisCoral(hit.collider.gameObject)){
-				Vector3 radius=hit.point-gameObject.transform.position;
-				if(radius.sqrMagnitude>biggestDistance){
-					biggestDistance=radius.sqrMagnitude;
-					farthestPosition=hit.point;
-					lastNormal=hit.normal;
+			if (IsPartOfThisCoral (hit.collider.gameObject)) {
+				Vector3 radius = hit.point - gameObject.transform.position;
+				if (radius.sqrMagnitude > biggestDistance) {
+					biggestDistance = radius.sqrMagnitude;
+					farthestPosition = hit.point;
+					lastNormal = hit.normal;
 				}
 			}
 		}
@@ -122,6 +121,8 @@ public class CoralDecorator : MonoBehaviour
 
 		Vector3 lookAtPoint = coral.transform.position - gameObject.transform.position + lookDirection * INFINITY;
 		coral.transform.LookAt (lookAtPoint);
+
+		coral.transform.parent = coralContainer.transform;
 	}
 
 	private CoralType GetRandomCoralType ()
