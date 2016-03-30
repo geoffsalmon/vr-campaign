@@ -157,6 +157,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &157718
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 488498}
+  - 114: {fileID: 11497056}
+  m_Layer: 0
+  m_Name: lureLeft (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!4 &400000
 Transform:
   m_ObjectHideFlags: 1
@@ -207,6 +223,7 @@ Transform:
   m_Children:
   - {fileID: 400002}
   - {fileID: 400000}
+  - {fileID: 488498}
   m_Father: {fileID: 400008}
   m_RootOrder: 0
 --- !u!4 &400008
@@ -273,6 +290,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 450430}
   m_RootOrder: 0
+--- !u!4 &488498
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157718}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.15, y: 0.33969378, z: 0.57}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 400006}
+  m_RootOrder: 2
 --- !u!20 &2000000
 Camera:
   m_ObjectHideFlags: 1
@@ -349,8 +378,8 @@ Camera:
   m_GameObject: {fileID: 100006}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 1}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0.36045632, g: 0.54339975, b: 0.8308824, a: 1}
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
@@ -648,6 +677,22 @@ MonoBehaviour:
   m_EventMask:
     serializedVersion: 2
     m_Bits: 2560
+--- !u!114 &11497056
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 157718}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8656515742d9244309ea221145fb19cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lureSettings:
+  - weight: 1
+    range: 0
+    duration: 0
+  lureCode: 0
 --- !u!124 &12400000
 Behaviour:
   m_ObjectHideFlags: 1
