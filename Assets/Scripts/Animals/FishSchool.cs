@@ -19,7 +19,7 @@ public class FishSchool : MonoBehaviour
 	private float weightOfOutOfBounds; //this is used when the fish goes below the floor, or above the water
 	private Vector3 averageFishPosition;
 	public MovementBoundary floorBoundary, ceilingBoundary;
-	private float schoolWidth = 50; //octree initialization size, small optimization consideration
+	private float schoolWidth = 20; //octree initialization size, small optimization consideration
 	private Fish[] fishies;
 	private FishLure[] fishLures;
 	private GameObject fishContainer;
