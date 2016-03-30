@@ -22,9 +22,11 @@ public class FPSInfo : MonoBehaviour {
 		frameCount++;
 		timer += Time.deltaTime;
 		if (timer > interval) {
-			text.text=Mathf.Round((float)frameCount/interval)+" FPS";
+			float fps=Mathf.Round((float)frameCount/interval);
+			text.text=fps+" FPS";
 			timer=0;
 			frameCount=0;
+			Debug.Log (fps+" FPS");
 		}
 	}
 }
