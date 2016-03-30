@@ -11,6 +11,7 @@ GameObject:
   - 33: {fileID: 3379886}
   - 23: {fileID: 2305608}
   - 114: {fileID: 11433060}
+  - 114: {fileID: 11446980}
   m_Layer: 0
   m_Name: coral2D005
   m_TagString: Untagged
@@ -24,8 +25,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 120994}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 1.91, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7069844, y: 0, z: 0, w: -0.7072292}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_Children: []
   m_Father: {fileID: 0}
@@ -72,6 +73,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f255791e325a5497c94974548ba6a162, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &11446980
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 120994}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44756418156bd41b19c3bb42b09138a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &100100000
