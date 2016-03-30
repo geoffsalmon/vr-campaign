@@ -8293,7 +8293,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42cb94cb4610e438ba92701473005e2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coralCount: 50
+  coralCount: 15
   coralTypes:
   - prefab: {fileID: 177036, guid: 1ad85b28039ce4418b666d3b8b062db1, type: 2}
     coralDirection: 0
