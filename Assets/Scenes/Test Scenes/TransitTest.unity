@@ -536,7 +536,10 @@ MonoBehaviour:
   Body: {fileID: 253073507}
   Head: {fileID: 376168609}
   TunnelPrefab: {fileID: 151608, guid: bac619d32d91e4bd09e10398d7cfa58a, type: 2}
-  ReefPrefab: {fileID: 128946, guid: 461f4240028014ac785bd66bee35539c, type: 2}
+  ReefPrefabs:
+  - {fileID: 100000, guid: b8272a52898a841b4b1f98d35d5f655a, type: 3}
+  - {fileID: 115802, guid: 09f8d336cbe6245218e27c94974d3d36, type: 2}
+  - {fileID: 135932, guid: 16e546ed7d624490bab22bd7798018f6, type: 2}
   TimeAtReef: 2
   TimeInTransit: 3
 --- !u!4 &1365288942

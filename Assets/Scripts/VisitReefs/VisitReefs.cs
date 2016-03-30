@@ -9,7 +9,8 @@ public class VisitReefs : MonoBehaviour {
 	public GameObject Head;
 
 	public GameObject TunnelPrefab;
-	public GameObject ReefPrefab;
+
+	public GameObject[] ReefPrefabs;
 
 	public float TimeAtReef;
 	public float TimeInTransit;
@@ -21,6 +22,9 @@ public class VisitReefs : MonoBehaviour {
 	};
 
 	public VisitReefsState State { get; private set; }
+
+	public int ReefVisitCount { get; private set; }
+	public int ReefVisitIndex { get; private set; }
 
 	private Transform bodyTransform;
 
@@ -51,8 +55,10 @@ public class VisitReefs : MonoBehaviour {
 		State = VisitReefsState.Start;
 		nextTime = Time.time;
 
-		if (ReefPrefab == null) {
-			ReefPrefab = GameObject.CreatePrimitive (PrimitiveType.Cube);
+		if (ReefPrefabs == null || ReefPrefabs.Length == 0) {
+			ReefPrefabs = new GameObject[] {
+				GameObject.CreatePrimitive(PrimitiveType.Cube)
+			};
 		}
 		if (TunnelPrefab == null) {
 			TunnelPrefab = new GameObject("Default Transit");
@@ -65,6 +71,8 @@ public class VisitReefs : MonoBehaviour {
 				TunnelPrefab.AddComponent<Transit>();
 			}
 		}
+		ReefVisitCount = 0;
+		ReefVisitIndex = 0;
 	}
 
 	private void OnTransit(Transit transit, Transit.TransitState state, float progress) {
@@ -85,12 +93,14 @@ public class VisitReefs : MonoBehaviour {
 				// put reef in wrapper object positioned relative to transit destination
 				nextReef = new GameObject("Reef Wrapper");
 				nextReef.transform.parent = reefs.transform;
-				GameObject reef = Instantiate(ReefPrefab);
+				GameObject reef = Instantiate(ReefPrefabs[ReefVisitIndex]);
+				ReefVisitIndex = (ReefVisitIndex + 1) % ReefPrefabs.Length;
+				ReefVisitCount++;
 				reef.transform.parent = nextReef.transform;
-				MeshRenderer renderer = reef.GetComponent<MeshRenderer>();
+				/*MeshRenderer renderer = reef.GetComponent<MeshRenderer>();
 				if (renderer != null) {
 					renderer.material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
-				}
+				}*/
 
 				// Place reef a bit past where transit will end
 				Vector3 dir = transit.FinalPosition - transit.ExitPosition;
