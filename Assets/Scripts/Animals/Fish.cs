@@ -1,23 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Fish : MonoBehaviour
 {
 	private float speed;
 	private FishSchool fishSchool;
 	private Vector3 previousDirection, newDirection;
-	private float directionTimer = 0;
-	private WaitForSeconds waitForSeconds;
+	private float timeSinceApplyZones = 0;
+
+	public static List<float> debugTimes;
 
 	public void Setup (FishSchool fishSchool, FishType fishType)
 	{
+		timeSinceApplyZones = Random.Range (0f, fishSchool.interval);
 		this.fishSchool = fishSchool;
 		speed = fishType.speed;
-		waitForSeconds = new WaitForSeconds (fishSchool.interval);
 		ChangeColor (new Color (0.3f, 0.3f, 0.5f));
 		fishType.Verify ();
-
-		StartCoroutine (Cycle ());
 	}
 		
 	public void ChangeColor (Color newColor)
@@ -33,24 +33,21 @@ public class Fish : MonoBehaviour
 	public void Update ()
 	{
 		if (fishSchool != null) {
-			directionTimer += Time.deltaTime;
-			gameObject.transform.forward = Vector3.Lerp (previousDirection, newDirection, directionTimer / fishSchool.interval);
+			timeSinceApplyZones += Time.deltaTime;
+			gameObject.transform.forward = Vector3.Lerp (previousDirection, newDirection, timeSinceApplyZones / fishSchool.interval);
 			gameObject.transform.position = gameObject.transform.position + gameObject.transform.forward * speed * Time.deltaTime;
-		}
-	}
-	
-	private IEnumerator Cycle ()
-	{
-		yield return new WaitForSeconds (Random.Range (0, fishSchool.interval)); //this initial wait is to spread out fish computation
-		while (true) {
-			fishSchool.UpdateOctree (this);
-			ApplyZones ();
-			yield return waitForSeconds;
+
+			if(timeSinceApplyZones>fishSchool.interval){
+				fishSchool.UpdateOctree (this);
+				ApplyZones ();
+				timeSinceApplyZones = 0; //this must come after ApplyZones
+			}
 		}
 	}
 	
 	private void ApplyZones ()
 	{
+		debugTimes.Add (Time.realtimeSinceStartup);
 		//calculate and apply the new orientation this fish should have
 		Vector3 selfDirection = transform.forward * fishSchool.weightOfSelf;
 		Vector3 repulsion = fishSchool.GetRepulsionAveragePosition (this) * fishSchool.weightOfRepulsion; //get the vector that best faces away from very nearby fish
@@ -72,7 +69,6 @@ public class Fish : MonoBehaviour
 
 		newDirection = idealDirection;
 		previousDirection = transform.forward;
-		directionTimer = 0;
 	}
 
 }

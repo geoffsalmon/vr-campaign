@@ -28,9 +28,13 @@ public class FishSchool : MonoBehaviour
 	private BoundsOctree<Fish> octree;
 	private int nextFishWeightCounter=0;
 	private int nextFishIndex=0;
+
+	private bool hasShownDebug=false;
 	
 	void Start ()
 	{
+		Fish.debugTimes = new System.Collections.Generic.List<float> ();
+
 		if (fishTypes.Length==0) {
 			string defaultPrefab = "test/test fish";
 			Debug.LogWarning ("fish school was given no fish prefab. Using default '" + defaultPrefab + "'.");
@@ -46,6 +50,16 @@ public class FishSchool : MonoBehaviour
 
 		if (interval > 1)
 			Debug.LogWarning ("Interval greater than one. Might cause weirdness in ApplyZones.");
+	}
+
+	void Update(){
+		if (!hasShownDebug && Time.realtimeSinceStartup > 5) {
+			hasShownDebug=true;
+			string text="";
+			foreach(float a in Fish.debugTimes)
+				text+=a+"\n";
+			FileWriter.Write(text,"data.txt");
+		}
 	}
 
 	private FishLure[] GetFishLures(){
