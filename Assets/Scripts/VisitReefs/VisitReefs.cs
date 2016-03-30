@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 // Manages moving from one reef to another and instantiates the reefs and tunnels inbetween as needed.
 public class VisitReefs : MonoBehaviour {
@@ -42,6 +43,8 @@ public class VisitReefs : MonoBehaviour {
 	// Time of next state change. Can be delayed if waiting is false.
 	private float nextTime;
 	private bool waiting = false;
+
+	private HashSet<ReefStage> activeStages = new HashSet<ReefStage>();
 
 	void OnDisable() {
 		Transit.OnTransit -= OnTransit;
@@ -102,14 +105,20 @@ public class VisitReefs : MonoBehaviour {
 					renderer.material.color = new Color(Random.value, Random.value, Random.value, 1.0f);
 				}*/
 
+				activeStages.Clear();
+				IReefVisitor[] visitors = reef.GetComponentsInChildren<IReefVisitor>();
+				for (int i = 0, n = visitors.Length; i < n; i++) {
+					ReefStage stage = new ReefStage(this, activeStages);
+					activeStages.Add(stage);
+					visitors[i].visitingReef(stage);
+				}
+
 				// Place reef a bit past where transit will end
 				Vector3 dir = transit.FinalPosition - transit.ExitPosition;
 				dir.Normalize();
 				Vector3 pos = transit.FinalPosition + 4 * dir;
 				nextReef.transform.position = pos;
 				// TODO: Rotate reef so it's facing the player
-
-				Debug.Log("New reef at " + pos);
 			}
 		}
 	}
@@ -154,9 +163,34 @@ public class VisitReefs : MonoBehaviour {
 				visitReef();
 				break;
 			case VisitReefsState.AtReef:
-				startTransit();
+				// avoid leaving reef until all interested components are finished
+				if (activeStages.Count == 0) {
+					startTransit();
+				}
 				break;
 			}
+		}
+	}
+
+	public void forceFinishAll() {
+		activeStages.Clear();
+	}
+}
+
+public class ReefStage {
+	public VisitReefs VisitReefs { get; private set; }
+	private HashSet<ReefStage> allStages;
+	public bool Finished { get; private set; }
+
+	public ReefStage(VisitReefs visitReefs, HashSet<ReefStage> allStages) {
+		VisitReefs = visitReefs;
+		this.allStages = allStages;
+	}
+
+	public void finishStage() {
+		if (!Finished) {
+			Finished = true;
+			allStages.Remove(this);
 		}
 	}
 }
