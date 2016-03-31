@@ -138,6 +138,10 @@ public class FishSchool : MonoBehaviour
 		float halfWidth = schoolWidth / 2;
 		foreach (FishType fishType in fishTypes) {
 			for (int i=0; i<fishType.count; i++) {
+				if (fishType.prefab==null){
+					Debug.LogWarning("One of the FishTypes in FishSchool has a null prefab. Oops! " +gameObject);
+					continue;
+				}
 				Vector3 startPosition = gameObject.transform.position + new Vector3 (Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth));
@@ -211,6 +215,12 @@ public class FishSchool : MonoBehaviour
 		foreach (Fish otherFish in octree.GetColliding(boundsOfRepulsion))
 			nearby += otherFish.gameObject.transform.position - fish.gameObject.transform.position;
 		return nearby.normalized;
+	}
+
+	public void CollectFish(Fish fish){
+		octree.Remove (fish);
+		fish.SetStatus (FishStatuses.collected);
+		fishies.Remove (fish);
 	}
 	
 	public void UpdateOctree (Fish fish)

@@ -4,12 +4,17 @@ using System.Collections.Generic;
 
 //Fish controls the movement and appearance of fish. It's attached to every fish in a FishSchool. This class is used internally by FishSchool.
 
+public enum FishStatuses{
+	active, collected
+}
+
 public class Fish : MonoBehaviour
 {
 	private float speed;
-	private FishSchool fishSchool;
+	public FishSchool fishSchool;
 	private Vector3 previousDirection, newDirection;
 	private float timeSinceApplyZones = 0;
+	private FishStatuses fishStatus = FishStatuses.active;
 
 	public static List<float> debugTimes;
 
@@ -28,7 +33,7 @@ public class Fish : MonoBehaviour
 	{
 		//Apply the small changes in location and rotation.
 		//Also check if a fish recalculation is necessary.
-		if (fishSchool != null) {
+		if (fishSchool != null && IsActive()) {
 			timeSinceApplyZones += Time.deltaTime;
 			gameObject.transform.forward = Vector3.Lerp (previousDirection, newDirection, timeSinceApplyZones / fishSchool.interval);
 			gameObject.transform.position = gameObject.transform.position + gameObject.transform.forward * speed * Time.deltaTime;
@@ -38,6 +43,17 @@ public class Fish : MonoBehaviour
 				ApplyZones ();
 				timeSinceApplyZones = 0; //this must come after ApplyZones
 			}
+		}
+	}
+
+	public bool IsActive(){
+		return fishStatus==FishStatuses.active;
+	}
+
+	public void SetStatus(FishStatuses newStatus){
+		fishStatus=newStatus;
+		if (fishStatus == FishStatuses.collected) {
+			Destroy (gameObject);
 		}
 	}
 	

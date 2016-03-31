@@ -12,13 +12,18 @@ public class VisionTracker : MonoBehaviour
 	//How often (in seconds) VisionTracker will check what is looking at what.
 	public static float interval = 0.5f;
 
-	//directLookAtScore will only increment when the lookAtScore is at least this much.
+	//totalLookAtScore will only increment when the lookAtScore is at least this much.
 	public float lookAtThreshold=0.8f;
 
 	//how many seconds of history VisionTracker will record.
 	public float lookAtHistorySeconds=5;
 
-	private float directLookAtScore = 0;
+	//If the main camera is farther than this distance, then LookAtScore will return -1.
+	//Set to zero for no maximum distance.
+	public float maximumDistance=20;
+	private float maximumDistanceSquared;
+
+	private float totalLookAtScore = 0;
 	private GameObject player;
 	private float[] lookAtHistory;
 	private int historyIndex=0;
@@ -27,6 +32,7 @@ public class VisionTracker : MonoBehaviour
 	void Start ()
 	{
 		waitForSeconds = new WaitForSeconds (interval);
+		maximumDistanceSquared = maximumDistance * maximumDistance;
 		player = Camera.main.gameObject;
 		lookAtHistory= new float[Mathf.CeilToInt(lookAtHistorySeconds/interval)];
 		StartCoroutine (Cycle());
@@ -38,22 +44,26 @@ public class VisionTracker : MonoBehaviour
 		float total = 0;
 		foreach (float i in lookAtHistory)
 			total += i;
-		return total/lookAtHistorySeconds;
+		return total/lookAtHistory.Length;
 	}
 
 	public float GetLookAtScore(){
 		//returns a score between [-1,1] where 1 means the player is looking directly at this object right now, -1 means directly looking away.
 		Vector3 playerToObject = gameObject.transform.position - player.transform.position;
+
+		if (maximumDistance!=0 && playerToObject.sqrMagnitude > maximumDistanceSquared)
+			return -1;
+
 		playerToObject.Normalize ();
 		Vector3 lookDirection = Camera.main.transform.forward;
 
 		return Vector3.Dot (playerToObject, lookDirection);
 	}
 
-	public float GetDirectLookAtScore(){
+	public float GetTotalLookAtScore(){
 		//The total number of seconds that the player has been directly looking at this object.
 		//"Directly" means having a greater lookAtScore than the threshold value.
-		return directLookAtScore;
+		return totalLookAtScore;
 	}
 
 	private IEnumerator Cycle ()
@@ -62,7 +72,7 @@ public class VisionTracker : MonoBehaviour
 		while (true) {
 			float score=GetLookAtScore();
 			if (score>lookAtThreshold)
-				directLookAtScore+=interval;
+				totalLookAtScore+=interval;
 
 			lookAtHistory[historyIndex]=score;
 			historyIndex++;

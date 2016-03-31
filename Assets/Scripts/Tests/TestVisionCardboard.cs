@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -19,7 +19,7 @@ public class TestVisionCardboard : MonoBehaviour
 	{
 		foreach (VisionTracker vt in FindObjectsOfType<VisionTracker>()) {
 			string h = vt.GetHistoryScore ().ToString("F2");
-			string d = vt.GetDirectLookAtScore ().ToString("F2");
+			string d = vt.GetTotalLookAtScore ().ToString("F2");
 			string s = vt.GetLookAtScore ().ToString("F2");
 			Debug.Log(vt.gameObject.name + " history=" + h + " direct=" + d + " score=" + s);
 		}
