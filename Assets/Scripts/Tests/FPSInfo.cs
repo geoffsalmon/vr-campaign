@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 //attach this script, once, to any gameobject and there will be a debug canvas with an FPS counter, updated every second
 public class FPSInfo : MonoBehaviour {
+	public bool showOnScreen = true;
+	public bool showInConsole = true;
 	private GameObject canvas;
 	private Text text;
 
@@ -12,9 +14,11 @@ public class FPSInfo : MonoBehaviour {
 	private int frameCount;
 
 	void Start () {
-		GameObject prefab = Resources.Load ("test/Debug Canvas") as GameObject;
-		canvas = Instantiate (prefab) as GameObject;
-		text = canvas.transform.GetChild (0).gameObject.GetComponent<Text> ();
+		if (showOnScreen) {
+			GameObject prefab = Resources.Load ("test/Debug Canvas") as GameObject;
+			canvas = Instantiate (prefab) as GameObject;
+			text = canvas.transform.GetChild (0).gameObject.GetComponent<Text> ();
+		}
 	}
 	
 	// Update is called once per frame
@@ -23,9 +27,12 @@ public class FPSInfo : MonoBehaviour {
 		timer += Time.deltaTime;
 		if (timer > interval) {
 			float fps=Mathf.Round((float)frameCount/interval);
-			text.text=fps+" FPS";
 			timer=0;
 			frameCount=0;
+
+			if(showOnScreen)
+			text.text=fps+" FPS";
+			if(showInConsole)
 			Debug.Log (fps+" FPS");
 		}
 	}
