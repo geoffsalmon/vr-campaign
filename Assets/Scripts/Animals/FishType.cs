@@ -20,7 +20,7 @@ public class FishType{
 	public void Verify(){
 		if (count < 1) {
 			Debug.LogWarning ("A fish type in this scene has a count less than 1. This is probably bad! Setting to default. " + prefab);
-			count=1;
+			count=50;
 		}
 		if (speed <= 0) {
 			Debug.LogWarning ("A fish type in this scene has a speed less than or equal to zero. This is probably bad! Setting to default. " + prefab);
