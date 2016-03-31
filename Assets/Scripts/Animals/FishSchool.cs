@@ -42,8 +42,6 @@ public class FishSchool : MonoBehaviour
 	private Bounds fishBounds;
 	private Bounds boundsOfOrientation, boundsOfRepulsion;
 	private BoundsOctree<Fish> octree;
-	private int nextFishWeightCounter = 0;
-	private int nextFishIndex = 0;
 	private bool hasShownDebug = false;
 	
 	void Start ()

@@ -52,7 +52,6 @@ public class Coral : MonoBehaviour
 		float degreesPerStep = 180 / (rotatedCopyCount + 1);
 		for(int i=0;i<rotatedCopyCount;i++){
 			GameObject copy = Instantiate(gameObject,transform.position,transform.rotation) as GameObject;
-			Coral coralOfCopy=copy.GetComponent<Coral>();
 
 			float degrees=degreesPerStep*(i+1);
 

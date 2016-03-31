@@ -14,7 +14,6 @@ public class CoralDecorator : MonoBehaviour
 
 	private int coralLikelihoodTotal = 0;
 	private ArrayList addedMeshColliders;
-	private int failCount = 0;
 	private Vector3 lastNormal;
 	private const int INFINITY = 10000;
 	private static GameObject coralContainer;

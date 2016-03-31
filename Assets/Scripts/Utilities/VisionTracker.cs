@@ -18,7 +18,6 @@ public class VisionTracker : MonoBehaviour
 	//how many seconds of history VisionTracker will record.
 	public float lookAtHistorySeconds=5;
 
-	private float lookAtTimer = 0;
 	private float directLookAtScore = 0;
 	private GameObject player;
 	private float[] lookAtHistory;
