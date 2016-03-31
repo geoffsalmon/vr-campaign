@@ -2,13 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// This randomizes the appearance and size of a coral.
+// It's possible that random colours and materials will need to be removed for performance in the future.
+
 public class Coral : MonoBehaviour
 {
+	//Scale will be randomly between minScale and maxScale.
 	public Vector3 minScale, maxScale;
+	//A list of all possible colors for the coral to choose from.
 	public Color[] possibleColors;
+	//In the case of a 2D coral, create this many clones and rotate them evenly spaced around the Z axis.
 	public int rotatedCopyCount = 0;
+	//Instead of randomly choosing out of possibleColors, choose two and randomly blend them.
 	public bool blendColors=true;
+	//When doing the above blendColors, we can guarantee that one value in RGB will be 255, so the color is always bright.
 	public bool guaranteeOneMaxColor = true;
+
 	private static bool hasGivenColliderWarning=false;
 	private static bool hasGivenColorWarning=false;
 

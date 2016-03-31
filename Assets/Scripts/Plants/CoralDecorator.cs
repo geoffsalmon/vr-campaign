@@ -1,10 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Attach this component to any gameobject, even one with nested meshes inside it, to decorate its exterior with corals.
+
+// Make sure that the center of the parent game object is not floating in empty space. Otherwise many corals may be generated on that same point.
+
 public class CoralDecorator : MonoBehaviour
 {
+	//How many corals to generate.
 	public int coralCount = 50;
+	//Information on corals to generate, see CoralType for more information.
 	public CoralType[] coralTypes;
+
 	private int coralLikelihoodTotal = 0;
 	private ArrayList addedMeshColliders;
 	private int failCount = 0;
@@ -58,9 +65,10 @@ public class CoralDecorator : MonoBehaviour
 		}
 	}
 
-	private bool IsPartOfThisCoral (GameObject go)
+	private bool IsPartOfThisCoral (GameObject child)
 	{
-		Transform parent = go.transform;
+		//Returns true if the game object is a child of this CoralDecorate script.
+		Transform parent = child.transform;
 		while (parent!=null) {
 			if (parent.gameObject.GetComponent<CoralDecorator> () == this)
 				return true;
@@ -121,6 +129,8 @@ public class CoralDecorator : MonoBehaviour
 
 		Vector3 lookAtPoint = coral.transform.position - gameObject.transform.position + lookDirection * INFINITY;
 		coral.transform.LookAt (lookAtPoint);
+		if (coralType.coralDirection == CoralDirections.up)
+			coral.transform.RotateAround (coral.transform.position, Vector3.up, Random.Range (0, 360));
 
 		coral.transform.parent = coralContainer.transform;
 	}

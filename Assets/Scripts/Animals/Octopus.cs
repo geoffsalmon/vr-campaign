@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Octopus : MonoBehaviour {
-	public Animation anim;
-	// Use this for initialization
-	void Start () {
-		anim = GetComponent<Animation>();
+// Currently, seems to be a placeholder for an Octopus script. I'm not even sure Update is a good place to play animations.
 
+public class Octopus : MonoBehaviour {
+	public Animation animation;
+	void Start () {
+		animation = GetComponent<Animation>();
 	}
-	
-	// Update is called once per frame
 	void Update () {
-		anim.Play();
+		animation.Play();
 	}
 }

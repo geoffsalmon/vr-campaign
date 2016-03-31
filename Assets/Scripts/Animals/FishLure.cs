@@ -1,39 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[System.Serializable]
-public class LureSetting{
-	public float weight=1;
-	public float range=0;
-	public float duration=1;
-	private float sqrRange=0;
-	private Color gizmoColor;
+// Attaching FishLure to a GameObject makes fish attracted to it or repelled by it.
+// Attach negative weighted lures to a shark to repel fish, or positive weighted lures to points in space, or breadcrumbs, to attract fish.
+// It's also possible to make the FishLure change its strength/weights in cycle, and to make only certain schools respond to certain lures.
 
-	public float GetSqrRange(){
-		if (sqrRange == 0)
-			sqrRange = range * range;
-		return sqrRange;
-	}
-}
+// A FishSchool will only use a lure if FishSchool.lureCode == FishLure.lureCode
+
+// lureSettings is how you set the lure to change over time. For example:
+// lureSettings[0].weight=1   lureSettings[0].duration=10
+// lureSettings[1].weight=0   lureSettings[1].duration=5
+// lureSettings[2].weight=0.1   lureSettings[2].duration=50
+// In this case, the lure starts with weight 1 for 10 seconds. Then it has weight 0 for 5 seconds, and finally weight 0.1 for 50 seconds. Then it loops back to the start.
+
+// Having a single LureSetting means it will always be on that setting.
 
 public class FishLure : MonoBehaviour {
 	public LureSetting[] lureSettings;
 	public int lureCode=0;
 	private int index=0;
 	private float timer = 0;
-
-	private float minWeight,maxWeight;
-
-	public void Start(){
-		minWeight = lureSettings [0].weight;
-		maxWeight = minWeight;
-		foreach (LureSetting ls in lureSettings) {
-			if (ls.weight<minWeight)
-				minWeight=ls.weight;
-			if(ls.weight>maxWeight)
-				maxWeight=ls.weight;
-		}
-	}
 
 	public float GetWeight(){
 		return lureSettings [index].weight;

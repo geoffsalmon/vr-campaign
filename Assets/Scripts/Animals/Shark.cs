@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Shark : MonoBehaviour {
+// Placeholder for a Shark movement script. Currently just a good way to demonstrate and test repelling lures.
 
+public class Shark : MonoBehaviour {
 	public float speed=1;
 
 	void Update () {

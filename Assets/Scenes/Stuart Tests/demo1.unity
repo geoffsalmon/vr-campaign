@@ -227,7 +227,7 @@ Transform:
   - {fileID: 1903118911}
   - {fileID: 333017272}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 9
 --- !u!1 &178272585
 GameObject:
   m_ObjectHideFlags: 0
@@ -257,15 +257,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishTypes:
   - prefab: {fileID: 161746, guid: e5d4796bfbe2747efbdfa4357800f800, type: 2}
-    count: 10
+    count: 80
     speed: 4
   - prefab: {fileID: 179426, guid: 2b710c4712ccf4ea8be20af172518861, type: 2}
-    count: 3
+    count: 30
     speed: 4
   - prefab: {fileID: 109496, guid: bbb36a29c2f974df4bba24748c67628c, type: 2}
-    count: 1
+    count: 10
     speed: 6
-  fishCount: 100
   interval: .5
   lureCode: 2
   radiusOfOrientation: 60
@@ -278,11 +277,13 @@ MonoBehaviour:
     height: 0
     heightGameObject: {fileID: 0}
     heightTerrain: {fileID: 0}
+    meshCollider: {fileID: 1392338321}
     heightPadding: 5
   ceilingBoundary:
     height: 0
-    heightGameObject: {fileID: 0}
+    heightGameObject: {fileID: 801671732}
     heightTerrain: {fileID: 0}
+    meshCollider: {fileID: 0}
     heightPadding: 5
 --- !u!4 &178272587
 Transform:
@@ -688,7 +689,7 @@ Transform:
   - {fileID: 962888499}
   - {fileID: 563680423}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 8
 --- !u!114 &714043991
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -700,6 +701,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24ed659cf7a61459496f7d25abb91852, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showOnScreen: 1
+  showInConsole: 0
 --- !u!1001 &759658714
 Prefab:
   m_ObjectHideFlags: 0
@@ -890,7 +893,23 @@ Transform:
   - {fileID: 614787145}
   - {fileID: 1422240683}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 11
+--- !u!1 &1392338320 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 100000, guid: 905aa6d04989445f49ebf19d884f49e3, type: 3}
+  m_PrefabInternal: {fileID: 759658714}
+--- !u!64 &1392338321
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1392338320}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Convex: 0
+  m_Mesh: {fileID: 4300000, guid: 905aa6d04989445f49ebf19d884f49e3, type: 3}
 --- !u!1 &1409387962
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,7 +1071,7 @@ Transform:
   - {fileID: 540046016}
   - {fileID: 1409387963}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 10
 --- !u!1 &1667340227
 GameObject:
   m_ObjectHideFlags: 0
@@ -1082,9 +1101,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishTypes:
   - prefab: {fileID: 106050, guid: 4f00fa734d1ef403f9b5dd506069d705, type: 2}
-    count: 1
+    count: 100
     speed: 4
-  fishCount: 150
   interval: .5
   lureCode: 1
   radiusOfOrientation: 60
@@ -1097,11 +1115,13 @@ MonoBehaviour:
     height: 0
     heightGameObject: {fileID: 0}
     heightTerrain: {fileID: 0}
+    meshCollider: {fileID: 1392338321}
     heightPadding: 5
   ceilingBoundary:
     height: 0
-    heightGameObject: {fileID: 0}
+    heightGameObject: {fileID: 801671732}
     heightTerrain: {fileID: 0}
+    meshCollider: {fileID: 0}
     heightPadding: 5
 --- !u!4 &1667340229
 Transform:
@@ -1436,9 +1456,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fishTypes:
   - prefab: {fileID: 119300, guid: 8ab655f0b4d394fb49437abfcc7802aa, type: 2}
-    count: 1
+    count: 100
     speed: 6
-  fishCount: 100
   interval: .5
   lureCode: 3
   radiusOfOrientation: 60
@@ -1451,11 +1470,13 @@ MonoBehaviour:
     height: 0
     heightGameObject: {fileID: 0}
     heightTerrain: {fileID: 0}
+    meshCollider: {fileID: 1392338321}
     heightPadding: 5
   ceilingBoundary:
     height: 0
-    heightGameObject: {fileID: 0}
+    heightGameObject: {fileID: 801671732}
     heightTerrain: {fileID: 0}
+    meshCollider: {fileID: 0}
     heightPadding: 5
 --- !u!1 &1903118910
 GameObject:
@@ -1633,7 +1654,7 @@ Transform:
   - {fileID: 1667340229}
   - {fileID: 111190307}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
 --- !u!1 &1957463073
 GameObject:
   m_ObjectHideFlags: 0

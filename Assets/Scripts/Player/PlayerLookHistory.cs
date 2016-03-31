@@ -2,6 +2,11 @@
 using System.Collections;
 using UnityEngine.Assertions;
 
+// PlayerLookHistory keeps track of where, on average, a player has been looking.
+
+// Attach this to any game object, just once, to record.
+// It keeps a history (by default 5 seconds) and averages those values to come up with an average look direction, and look positions, over that history.
+
 public class PlayerLookHistory : MonoBehaviour
 {
 	private class LogEvent
@@ -15,10 +20,10 @@ public class PlayerLookHistory : MonoBehaviour
 		}
 	}
 
-	//this is how often, in seconds, the PlayerLookHistory will record information
+	//This is how often, in seconds, the PlayerLookHistory will record information.
 	public static float interval = 0.2f;
 	
-	//how many seconds into the past where values will be recorded
+	//How many seconds into the past where values will be recorded.
 	public float lookAtHistorySeconds=5;
 
 	private GameObject player;
@@ -41,6 +46,7 @@ public class PlayerLookHistory : MonoBehaviour
 	}
 
 	public Vector3 GetAverageLookDirection(){
+		//If the player has generally been looking up for the whole history, this will return a generally up unit vector.
 		Vector3 total=Vector3.zero;
 		foreach (LogEvent log in logEvents) {
 			total+=log.lookDirection;
@@ -50,12 +56,8 @@ public class PlayerLookHistory : MonoBehaviour
 	}
 
 	public Vector3 GetAverageLookPosition(float range){
-		Vector3 total=Vector3.zero;
-		foreach (LogEvent log in logEvents) {
-			total+=log.playerPosition+log.lookDirection*range;
-		}
-		total /= logEvents.Length;
-		return total;
+		//If the player has generally been looking up for the whole history, this will return a generally up vector of length range.
+		return GetAverageLookDirection()*range;
 	}
 	
 	private IEnumerator Cycle ()

@@ -7,17 +7,23 @@ public enum Inequality
 	lessThan
 }
 
-//this class describes a boundary for marine life to swim away from if they cross it.
-//it can be a min or max height, above or below a y value, or above or below a gameobject
+//This class is used by FishSchool to describe a boundary for marine life to swim away from if they cross it.
+//It can be a min or max height, above or below a gameobject, above or below Unity terrain, or above or below a MeshCollider.
 [System.Serializable]
 public class MovementBoundary
 {
-	private Inequality isInsideZoneInequality;
 	public float height = 0;
 	public GameObject heightGameObject;
 	public Terrain heightTerrain;
-	public float heightPadding = 0; //if the terrain/gameobject height is 4 and padding is 3, the boundary height will be 4+3
+	public MeshCollider meshCollider;
+
+	//if the padding is X, the boundary height will be X units stricter.
+	public float heightPadding = 0; 
 	private int settingCount=0;
+	private Inequality isInsideZoneInequality;
+	private static bool hasThrownWarning = false;
+	private static bool hasThrownHeightWarning = false;
+	private const int INFINITY = 10000;
 
 	public void Setup(bool isFloor){
 		settingCount = 0;
@@ -26,6 +32,8 @@ public class MovementBoundary
 		if (heightGameObject != null)
 			settingCount++;
 		if (heightTerrain != null)
+			settingCount++;
+		if (meshCollider != null)
 			settingCount++;
 
 		isInsideZoneInequality = isFloor ? Inequality.greaterThan : Inequality.lessThan;
@@ -44,6 +52,8 @@ public class MovementBoundary
 			boundaryHeight = heightTerrain.SampleHeight (position) + heightTerrain.transform.position.y + heightPadding;
 		} else if (heightGameObject != null) {
 			boundaryHeight = heightGameObject.transform.position.y;
+		} else if (meshCollider != null) {
+			boundaryHeight = GetHeightFromMeshCollider(position);
 		}
 
 		bool isBreakingRule = position.y < boundaryHeight;
@@ -52,7 +62,19 @@ public class MovementBoundary
 		return isBreakingRule;
 	}
 
-	private static bool hasThrownWarning = false;
+	private float GetHeightFromMeshCollider(Vector3 position){
+		foreach (RaycastHit hit in Physics.RaycastAll(position+Vector3.up*INFINITY,Vector3.down))
+			if (hit.collider == meshCollider)
+				return hit.point.y;
+
+		//infiniteHeight is very high if this is a water barrier, or very low if this is a ground barrier.
+		float infiniteHeight = position.y + INFINITY * (isInsideZoneInequality == Inequality.lessThan ? 1 : -1);
+		if (Debug.isDebugBuild && hasThrownHeightWarning) {
+			hasThrownHeightWarning = true;
+			Debug.LogWarning ("A fish failed to get its boundary from the mesh collider. It probably swam far away?");
+		}
+		return infiniteHeight;
+	}
 
 	private void VerifyHeightRule ()
 	{
@@ -61,7 +83,7 @@ public class MovementBoundary
 
 		if (!IsGoodHeightRule ()) {
 			hasThrownWarning = true;
-			Debug.LogWarning ("Someone set up a MovementHeightRule with weird settings. You must choose one of the three: height, heightTerrain, heightGameObject. Two of those three should be null.");
+			Debug.LogWarning ("Someone set up a MovementHeightRule with weird settings. You must choose one of the four: height, heightTerrain, heightGameObject, meshCollider. The others should be null.");
 		}
 	}
 

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+//This is a generic camera controller with a mouse, for desktop computer testing purposes.
+
 [AddComponentMenu("Camera-Control/Mouse Look")]
 public class MouseLook : MonoBehaviour {
 

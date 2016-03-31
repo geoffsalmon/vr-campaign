@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//Fish controls the movement and appearance of fish. It's attached to every fish in a FishSchool. This class is used internally by FishSchool.
+
 public class Fish : MonoBehaviour
 {
 	private float speed;
@@ -16,22 +18,16 @@ public class Fish : MonoBehaviour
 		timeSinceApplyZones = Random.Range (0f, fishSchool.interval);
 		this.fishSchool = fishSchool;
 		speed = fishType.speed;
-		ChangeColor (new Color (0.3f, 0.3f, 0.5f));
 		fishType.Verify ();
-	}
-		
-	public void ChangeColor (Color newColor)
-	{
-		foreach (GameObject child in ParentChildFunctions.GetAllChildren(gameObject,true)) {
-			MeshRenderer meshRenderer = child.GetComponent<MeshRenderer> ();
-			if (meshRenderer != null)
-				meshRenderer.material.color = newColor;
-		}
-			
+
+		previousDirection = transform.forward;
+		newDirection = transform.forward;
 	}
 
 	public void Update ()
 	{
+		//Apply the small changes in location and rotation.
+		//Also check if a fish recalculation is necessary.
 		if (fishSchool != null) {
 			timeSinceApplyZones += Time.deltaTime;
 			gameObject.transform.forward = Vector3.Lerp (previousDirection, newDirection, timeSinceApplyZones / fishSchool.interval);
@@ -47,27 +43,36 @@ public class Fish : MonoBehaviour
 	
 	private void ApplyZones ()
 	{
-		debugTimes.Add (Time.realtimeSinceStartup);
-		//calculate and apply the new orientation this fish should have
+		//Calculate the new orientation the fish should face.
+		//The fish sums up various influences to re-orient itself.
+		// 1) Self. The fish keeps its own orientation somewhat.
+		// 2) Repulsion. The fish faces away from fish that are very close to it.
+		// 3) Orientation. The fish faces in the same direction as fish that are a medium distance from it.
+		// 4) Attraction. The fish faces towards the average position of all fish.
+		// 5) Lures. The fish faces towards or away from lures, depending on the lure weight.
+
 		Vector3 selfDirection = transform.forward * fishSchool.weightOfSelf;
-		Vector3 repulsion = fishSchool.GetRepulsionAveragePosition (this) * fishSchool.weightOfRepulsion; //get the vector that best faces away from very nearby fish
-		Vector3 orientation = fishSchool.GetOrientationAverageDirection (this) * fishSchool.weightOfOrientation; //get the direction that nearby fish are generally facing
+		//Get the vector that best faces away from very nearby fish.
+		Vector3 repulsion = fishSchool.GetRepulsionAveragePosition (this) * fishSchool.weightOfRepulsion; 
+		//Get the direction that nearby fish are generally facing.
+		Vector3 orientation = fishSchool.GetOrientationAverageDirection (this) * fishSchool.weightOfOrientation; 
 		
 		Vector3 attractionDirection = fishSchool.GetAverageFishPosition () - transform.position;
-		Vector3 attraction = attractionDirection.normalized * fishSchool.weightOfAttraction; //get the unit vector that best faces towards all fish except those very far away
+		//Get the unit vector that best faces towards all fish.
+		Vector3 attraction = attractionDirection.normalized * fishSchool.weightOfAttraction;
+		//Get the vector representing the influence of all lures in the scene on this fish.
 		Vector3 lure = fishSchool.GetLureVector (this);
 
+		//Get the vector with a strong influence up or down, if the fish is above water or below ground.
 		Vector3 boundary = Vector3.zero;
-		//if fish is above water or below ground, turn it up/down
 		if (fishSchool.IsFishTooLow (this)) {
 			boundary = Vector3.up * fishSchool.GetOutOfBoundsWeight ();
 		} else if (fishSchool.IsFishTooHigh (this)) {
 			boundary = Vector3.down * fishSchool.GetOutOfBoundsWeight ();
 		}
 
-		Vector3 idealDirection = selfDirection - repulsion + orientation + attraction + lure + boundary;
-
-		newDirection = idealDirection;
+		//Calculate the direction this fish will gradually face until the next fish calculation.
+		newDirection = selfDirection - repulsion + orientation + attraction + lure + boundary;
 		previousDirection = transform.forward;
 	}
 

@@ -1,6 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//This is used by FishSchool to describe the types of fish it has.
+
+// prefab can be any GameObject you want to be a fish.
+// speed (typically around 4) is how fast these fish move.
+// count is how many of this fishType will be created in FishSchool.
+
 [System.Serializable]
 public class FishType{
 	public GameObject prefab;

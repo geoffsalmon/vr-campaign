@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+//This is a generic WASD controller for desktop computer testing purposes.
+
+//Attach to any game object, along with a camera centered on (0,0,0) to make it a moveable first person "player".
+
 public class FlightController : MonoBehaviour
 {
-
     private class MovementData
     {
         public float acceleration = 5f;
@@ -17,12 +20,12 @@ public class FlightController : MonoBehaviour
 
     void Update()
     {
-        updateMovementData(getForward(), KeyCode.W, KeyCode.UpArrow, KeyCode.S, KeyCode.DownArrow, KeyCode.Space);
-        updateMovementData(getSideways(), KeyCode.A, KeyCode.LeftArrow, KeyCode.D, KeyCode.RightArrow, KeyCode.Space);
-        updateMovementData(getUp(), KeyCode.Q, KeyCode.Plus, KeyCode.E, KeyCode.Minus, KeyCode.Space);
+        UpdateMovementData(GetForward(), KeyCode.W, KeyCode.UpArrow, KeyCode.S, KeyCode.DownArrow, KeyCode.Space);
+        UpdateMovementData(GetSideways(), KeyCode.A, KeyCode.LeftArrow, KeyCode.D, KeyCode.RightArrow, KeyCode.Space);
+        UpdateMovementData(GetUp(), KeyCode.Q, KeyCode.Plus, KeyCode.E, KeyCode.Minus, KeyCode.Space);
 
         Vector3 sidewaysVector = Vector3.Cross(Camera.main.transform.forward, Vector3.up).normalized;
-        Vector3 velocity = Camera.main.transform.forward * getForward().speed + sidewaysVector * getSideways().speed + Camera.main.transform.up * getUp().speed;
+        Vector3 velocity = Camera.main.transform.forward * GetForward().speed + sidewaysVector * GetSideways().speed + Camera.main.transform.up * GetUp().speed;
         velocity *= Time.deltaTime;
         transform.position = transform.position + velocity;
     }
@@ -32,14 +35,14 @@ public class FlightController : MonoBehaviour
         return Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
     }
 
-    private MovementData getForward()
+    private MovementData GetForward()
     {
         if (forward == null)
             forward = new MovementData();
         return forward;
     }
 
-    private MovementData getSideways()
+    private MovementData GetSideways()
     {
         if (sideways == null)
         {
@@ -50,7 +53,7 @@ public class FlightController : MonoBehaviour
         return sideways;
     }
 
-    private MovementData getUp()
+    private MovementData GetUp()
     {
         if (up == null)
         {
@@ -61,7 +64,7 @@ public class FlightController : MonoBehaviour
         return up;
     }
 
-    private void updateMovementData(MovementData movementData, KeyCode increase1, KeyCode increase2, KeyCode decrease1, KeyCode decrease2, KeyCode halt)
+    private void UpdateMovementData(MovementData movementData, KeyCode increase1, KeyCode increase2, KeyCode decrease1, KeyCode decrease2, KeyCode halt)
     {
         float deltaV = movementData.acceleration * Time.deltaTime;
         if (IsSprinting())

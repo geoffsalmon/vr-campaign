@@ -2,15 +2,18 @@
 using System.Collections;
 using System.Collections.Generic;
 
+// This generic script has useful functions for iterating recursively over parents and children of unity GameObjects.
+
 public static class ParentChildFunctions
 {
-
+	//Returns a list of all children, recursively, under a GameObject.
     public static ArrayList GetAllChildren(GameObject parentGameObject, bool includeParent = false)
     {
         string[] excludeSubstrings = new string[0];
         return GetAllChildren(parentGameObject, excludeSubstrings, includeParent);
     }
 
+	//Returns a list of all parents, recursively, above a GameObject.
     public static List<GameObject> GetAllParents(GameObject childGameObject)
     {
         List<GameObject> parents = new List<GameObject>();
@@ -23,6 +26,8 @@ public static class ParentChildFunctions
         return parents;
     }
 
+	//Turn on or off all the colliders of the children of some GameObject.
+	//You'd think just turning off Collider would work, but I seem to recall having some trouble there.
     public static void SetCollidersOfChildren(GameObject parentGameObject, bool isColliderEnabled, bool includeParent = false)
     {
         foreach (GameObject child in GetAllChildren(parentGameObject, includeParent))
@@ -38,11 +43,10 @@ public static class ParentChildFunctions
         }
     }
 
+	//Returns a list of all children, recursively, under a GameObject.
+	//excludes all objects and their children if their name contains any string in excludeSubstrings
     public static ArrayList GetAllChildren(GameObject parentGameObject, string[] excludeSubstrings, bool includeParent = false)
     {
-        //returns an arraylist of all children, grandchildren, etc.
-        //excludes all objects and their children if their name contains any string in excludeSubstrings
-
         ArrayList children = new ArrayList();
 
         if (includeParent)
