@@ -43,6 +43,7 @@ public class FishSchool : MonoBehaviour
 	private Bounds boundsOfOrientation, boundsOfRepulsion;
 	private BoundsOctree<Fish> octree;
 	private bool hasShownDebug = false;
+	private List<Fish> scratchList = new List<Fish>();
 	
 	void Start ()
 	{
@@ -190,9 +191,12 @@ public class FishSchool : MonoBehaviour
 		//Calculates the average direction of all fish within a medium distance to this fish.
 		Vector3 direction = Vector3.zero;		
 		boundsOfOrientation.center = fish.gameObject.transform.position;
-		foreach (Fish otherFish in octree.GetColliding(boundsOfOrientation))
-			direction += otherFish.gameObject.transform.forward;
-		return direction.normalized;
+		scratchList.Clear();
+		octree.GetColliding(boundsOfOrientation, scratchList);
+		foreach (Fish otherFish in scratchList)
+			direction += otherFish.transform.forward;
+		direction.Normalize();
+		return direction;
 	}
 
 	public bool IsFishTooLow (Fish fish)
@@ -211,9 +215,13 @@ public class FishSchool : MonoBehaviour
 	{
 		//Finds the average position of all fish very near the fish, returns a unit vector in that direction.
 		Vector3 nearby = Vector3.zero;
-		boundsOfRepulsion.center = fish.gameObject.transform.position;
-		foreach (Fish otherFish in octree.GetColliding(boundsOfRepulsion))
-			nearby += otherFish.gameObject.transform.position - fish.gameObject.transform.position;
+		boundsOfRepulsion.center = fish.transform.position;
+		scratchList.Clear();
+		octree.GetColliding(boundsOfRepulsion, scratchList);
+		foreach (Fish otherFish in scratchList)
+			nearby += otherFish.transform.position;
+		nearby -= scratchList.Count * fish.transform.position;
+
 		return nearby.normalized;
 	}
 

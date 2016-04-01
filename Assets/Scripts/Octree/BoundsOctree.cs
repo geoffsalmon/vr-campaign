@@ -120,8 +120,12 @@ public class BoundsOctree<T> {
 		//AddCollisionCheck(checkBounds);
 		//#endif
 		List<T> collidingWith = new List<T>();
-		rootNode.GetColliding(ref checkBounds, collidingWith);
+		GetColliding(checkBounds, collidingWith);
 		return collidingWith.ToArray();
+	}
+
+	public void GetColliding(Bounds checkBounds, List<T> result) {
+		rootNode.GetColliding(ref checkBounds, result);
 	}
 
 	/// <summary>
