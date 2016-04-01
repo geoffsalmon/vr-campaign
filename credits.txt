@@ -1,0 +1,17 @@
+Some of the assets used in this project are not properly credited.
+
+If you add any sounds, textures, models, or whatever to this project, then write the URL where you retrieved it here. If we decided to use it in some final product, we can figure out the credits properly later.
+
+
+
+TEXTURES
+http://st.depositphotos.com/2575705/2952/i/950/depositphotos_29529539-Seamless-corals-texture.jpg 
+
+
+
+
+SOUNDS
+
+
+
+MESHES
