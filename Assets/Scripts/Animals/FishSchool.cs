@@ -6,6 +6,13 @@ using System.Collections.Generic;
 
 // See FishType for more information on how to describe the fish in a FishSchool.
 
+public struct FishInfo {
+	public float speed;
+	public Vector3 previousDirection;
+	public Vector3 newDirection;
+	public float intervalStart;
+}
+
 public class FishSchool : MonoBehaviour
 {
 	public FishType[] fishTypes;
@@ -36,19 +43,24 @@ public class FishSchool : MonoBehaviour
 
 	//The size of the box where fish will randomly appear to start. Also the octree initialization size.
 	private float schoolWidth = 20;
-	private List<Fish> fishies;
+	private List<GameObject> fishies;
+	private FishInfo[] fishInfos;
 	private FishLure[] fishLures;
 	private GameObject fishContainer;
 	private Bounds fishBounds;
 	private Bounds boundsOfOrientation, boundsOfRepulsion;
-	private BoundsOctree<Fish> octree;
-	private bool hasShownDebug = false;
-	private List<Fish> scratchList = new List<Fish>();
+	private BoundsOctree<GameObject> octree;
+	private List<GameObject> scratchList = new List<GameObject>();
+
+	//State for updating the newDirection of each fish once per interval, multiple fish per frame
+	private float intervalStartTime;
+	private int updateChunkSize;
+	private int chunkSizeMax;
+	private int updateStartIndex;
+	private bool intervalUpdatesFinished = false;
 	
 	void Start ()
 	{
-		Fish.debugTimes = new System.Collections.Generic.List<float> ();
-
 		if (fishTypes.Length == 0) {
 			string defaultPrefab = "test/test fish";
 			Debug.LogWarning ("fish school was given no fish prefab. Using default '" + defaultPrefab + "'.");
@@ -64,18 +76,111 @@ public class FishSchool : MonoBehaviour
 
 		if (interval > 1)
 			Debug.LogWarning ("Interval greater than one. Might cause weirdness in ApplyZones.");
+
+		intervalStartTime = Time.time;
+		// roughly guess a chunk size assuming 30fps
+		updateChunkSize = Mathf.CeilToInt(fishies.Count / (30.0f * interval));
+		// set a max chunk size so that a low frame rate doesn't lead to larger updates leading to lower framerate, etc.
+		chunkSizeMax = Mathf.CeilToInt(fishies.Count / (15.0f * interval));
+
+		updateStartIndex = 0;
 	}
 
 	void Update ()
 	{
-		if (!hasShownDebug && Time.realtimeSinceStartup > 5) {
-			//debug logging for hunting down performance kinks
-			hasShownDebug = true;
-			string text = "";
-			foreach (float a in Fish.debugTimes)
-				text += a + "\n";
-			FileWriter.Write (text, "data.txt");
+		int n = fishies.Count;
+		if (n == 0)
+			return;
+		float time = Time.time;
+		float delta = Time.deltaTime;
+
+		// Update fish rotations and positions
+		for (int i = 0; i < n; i++) {
+			GameObject fish = fishies[i];
+			FishInfo info = fishInfos[i];
+
+			float t = (time - info.intervalStart) / interval;
+			Vector3 forward = Vector3.Lerp (info.previousDirection, info.newDirection, t).normalized;
+			fish.transform.forward = forward;
+			fish.transform.position = fish.transform.position + forward * info.speed * delta;
 		}
+
+		// The direction each fish is turning towards is recalulated once in every interval. We
+		// update the direction for only a subset of the fish in a single call to Update.
+
+		if (updateStartIndex >= n) {
+			// Have update all fish directions
+			float actualInterval = time - intervalStartTime;
+			if (!intervalUpdatesFinished) {
+				// When we first finish ApplyZones on all fish in the interval,
+				// Recalculate the number to call ApplyZones on each frame such
+				// so that fish updates are spread throughout the interval.
+				intervalUpdatesFinished = true;
+
+				// Recalculate the number to update such that each fish is
+				// updated roughly once per interval
+				int oldChunkSize = updateChunkSize;
+				updateChunkSize = Mathf.CeilToInt(actualInterval / interval * updateChunkSize);
+				if (updateChunkSize > chunkSizeMax)
+					updateChunkSize = chunkSizeMax;
+			}
+
+			// Even though we've ApplyZoned all the fish, wait until interval has actually
+			// expired before starting next one. This avoids updating directions too quickly.
+			if (actualInterval < interval) {
+				return;
+			}
+			// Start new interval
+			intervalStartTime = time;
+			updateStartIndex = 0;
+		}
+
+		// Update the newDirection for at most updateChunkSize fish.
+		int updateEndIndex = updateStartIndex + updateChunkSize;
+		if (updateEndIndex > n)
+			updateEndIndex = n;
+		for (int i = updateStartIndex; i < updateEndIndex; i++) {
+			GameObject fish = fishies[i];
+			UpdateOctree(fish);
+			ApplyZones(fish, ref fishInfos[i]);
+			fishInfos[i].intervalStart = time;
+		}
+		updateStartIndex = updateEndIndex; // record index to start direction update from next time
+	}
+
+	private void ApplyZones (GameObject fish, ref FishInfo info)
+	{
+		//Calculate the new orientation the fish should face.
+		//The fish sums up various influences to re-orient itself.
+		// 1) Self. The fish keeps its own orientation somewhat.
+		// 2) Repulsion. The fish faces away from fish that are very close to it.
+		// 3) Orientation. The fish faces in the same direction as fish that are a medium distance from it.
+		// 4) Attraction. The fish faces towards the average position of all fish.
+		// 5) Lures. The fish faces towards or away from lures, depending on the lure weight.
+
+		Vector3 selfDirection = fish.transform.forward * weightOfSelf;
+		//Get the vector that best faces away from very nearby fish.
+		Vector3 repulsion = GetRepulsionAveragePosition (fish) * weightOfRepulsion;
+		//Get the direction that nearby fish are generally facing.
+		Vector3 orientation = GetOrientationAverageDirection (fish) * weightOfOrientation;
+
+		Vector3 attractionDirection = GetAverageFishPosition () - fish.transform.position;
+		//Get the unit vector that best faces towards all fish.
+		Vector3 attraction = attractionDirection.normalized * weightOfAttraction;
+		//Get the vector representing the influence of all lures in the scene on this fish.
+		Vector3 lure = GetLureVector (fish);
+
+		//Get the vector with a strong influence up or down, if the fish is above water or below ground.
+		Vector3 boundary = Vector3.zero;
+		if (IsFishTooLow (fish)) {
+			boundary = Vector3.up * GetOutOfBoundsWeight ();
+		} else if (IsFishTooHigh (fish)) {
+			boundary = Vector3.down * GetOutOfBoundsWeight ();
+		}
+
+		//Calculate the direction this fish will gradually face until the next fish calculation.
+		info.newDirection = selfDirection - repulsion + orientation + attraction + lure + boundary;
+		info.previousDirection = fish.transform.forward;
 	}
 
 	private FishLure[] GetFishLures ()
@@ -125,10 +230,11 @@ public class FishSchool : MonoBehaviour
 		int fishCount = 0;
 		foreach (FishType ft in fishTypes)
 			fishCount += ft.count;
-		fishies = new List<Fish> ();
+		fishies = new List<GameObject> (fishCount);
+		fishInfos = new FishInfo[fishCount];
 		fishContainer = new GameObject ("fishes - " + gameObject.name);
 		fishBounds = new Bounds (Vector3.zero, new Vector3 (0.2f, 0.2f, 0.2f)); //octree needs some fish size, values don't matter much
-		octree = new BoundsOctree<Fish> (schoolWidth, transform.position, 0.1f, 1);
+		octree = new BoundsOctree<GameObject> (schoolWidth, transform.position, 0.1f, 1);
 
 		boundsOfOrientation = new Bounds (Vector3.zero, new Vector3 (radiusOfOrientation, radiusOfOrientation, radiusOfOrientation));
 		boundsOfRepulsion = new Bounds (Vector3.zero, new Vector3 (radiusOfRepulsion, radiusOfRepulsion, radiusOfRepulsion));
@@ -136,8 +242,10 @@ public class FishSchool : MonoBehaviour
 	
 	private void MakeFishies ()
 	{		
+		int fishi = 0;
 		float halfWidth = schoolWidth / 2;
 		foreach (FishType fishType in fishTypes) {
+			fishType.Verify();
 			for (int i=0; i<fishType.count; i++) {
 				if (fishType.prefab==null){
 					Debug.LogWarning("One of the FishTypes in FishSchool has a null prefab. Oops! " +gameObject);
@@ -147,16 +255,18 @@ public class FishSchool : MonoBehaviour
 			                                                                     Random.Range (-halfWidth, halfWidth),
 			                                                                     Random.Range (-halfWidth, halfWidth));
 
-				GameObject fishGameObject = Instantiate (fishType.prefab, startPosition, Random.rotation) as GameObject;
-				fishGameObject.transform.parent = fishContainer.transform;
-				Fish fish = fishGameObject.GetComponent<Fish> ();
-				if (fish == null)
-					fish = fishGameObject.AddComponent<Fish> ();
-				fish.Setup (this, fishType);
-				fishies.Add (fish);
+				GameObject fish = Instantiate (fishType.prefab, startPosition, Random.rotation) as GameObject;
+				fish.transform.parent = fishContainer.transform;
+				fishies.Add(fish);
+
+				fishInfos[fishi].speed = fishType.speed;
+				fishInfos[fishi].previousDirection = fishInfos[fishi].newDirection = fish.transform.forward;
+				fishInfos[fishi].intervalStart = Time.time;
+				fishi++;
 //			Color newColor = new Color( Random.value, Random.value, Random.value, 1.0f ); // RANDOM COLOR ADDED
 //			fishies[i].GetComponent<MeshRenderer>().material.color = newColor; // RANDOM COLOR APPLIED
-				octree.Add (fishies [i], fishBounds);
+				fishBounds.center = fish.transform.position;
+				octree.Add (fish, fishBounds);
 			}
 		}
 	}
@@ -165,77 +275,83 @@ public class FishSchool : MonoBehaviour
 	{
 		while (true) {
 			averageFishPosition = Vector3.zero;
-			foreach (Fish fish in fishies) {
-				averageFishPosition += fish.gameObject.transform.position;
+			foreach (GameObject fish in fishies) {
+				averageFishPosition += fish.transform.position;
 			}
 			averageFishPosition /= fishies.Count;
 			yield return new WaitForSeconds (interval);
 		}
 	}
 
-	public Vector3 GetLureVector (Fish fish)
+	public Vector3 GetLureVector (GameObject fish)
 	{
 		//This sums up all the lures with a lureCode that matches this FishSchool, returning a vector with lure weights applied.
 		Vector3 lure = Vector3.zero;
 		foreach (FishLure fishLure in fishLures) {
 			if (fishLure.IsFishInRange (fish)) {
-				Vector3 diff = fishLure.gameObject.transform.position - fish.gameObject.transform.position;
+				Vector3 diff = fishLure.transform.position - fish.transform.position;
 				lure += diff.normalized * fishLure.GetWeight ();
 			}
 		}
 		return lure;
 	}
 	
-	public Vector3 GetOrientationAverageDirection (Fish fish)
+	public Vector3 GetOrientationAverageDirection (GameObject fish)
 	{
 		//Calculates the average direction of all fish within a medium distance to this fish.
 		Vector3 direction = Vector3.zero;		
 		boundsOfOrientation.center = fish.gameObject.transform.position;
 		scratchList.Clear();
 		octree.GetColliding(boundsOfOrientation, scratchList);
-		foreach (Fish otherFish in scratchList)
+		foreach (GameObject otherFish in scratchList)
 			direction += otherFish.transform.forward;
 		direction.Normalize();
 		return direction;
 	}
 
-	public bool IsFishTooLow (Fish fish)
+	public bool IsFishTooLow (GameObject fish)
 	{
 		//This returns true when the fish is below the floor MovementBoundary.
-		return floorBoundary != null && floorBoundary.IsBreakingRule (fish.gameObject.transform.position);
+		return floorBoundary != null && floorBoundary.IsBreakingRule (fish.transform.position);
 	}
 
-	public bool IsFishTooHigh (Fish fish)
+	public bool IsFishTooHigh (GameObject fish)
 	{
 		//This returns true when the fish is above the water MovementBoundary.
-		return ceilingBoundary != null && ceilingBoundary.IsBreakingRule (fish.gameObject.transform.position);
+		return ceilingBoundary != null && ceilingBoundary.IsBreakingRule (fish.transform.position);
 	}
 	
-	public Vector3 GetRepulsionAveragePosition (Fish fish)
+	public Vector3 GetRepulsionAveragePosition (GameObject fish)
 	{
 		//Finds the average position of all fish very near the fish, returns a unit vector in that direction.
 		Vector3 nearby = Vector3.zero;
 		boundsOfRepulsion.center = fish.transform.position;
 		scratchList.Clear();
 		octree.GetColliding(boundsOfRepulsion, scratchList);
-		foreach (Fish otherFish in scratchList)
+		foreach (GameObject otherFish in scratchList)
 			nearby += otherFish.transform.position;
 		nearby -= scratchList.Count * fish.transform.position;
 
 		return nearby.normalized;
 	}
 
-	public void CollectFish(Fish fish){
+	public void CollectFish(GameObject fish){
 		octree.Remove (fish);
-		fish.SetStatus (FishStatuses.collected);
-		fishies.Remove (fish);
+		int i = fishies.IndexOf(fish);
+		if (i != -1) {
+			int n = fishies.Count;
+			fishies[i] = fishies[n - 1];
+			fishies.RemoveAt(n - 1);
+			fishInfos[i] = fishInfos[n - 1];
+		}
+		Destroy(fish);
 	}
 	
-	public void UpdateOctree (Fish fish)
+	public void UpdateOctree (GameObject fish)
 	{
 		//Octree is a data structure to efficiently keep track of which fishies are near other fishies. This updates it regularly.
 		octree.Remove (fish);
-		fishBounds.center = fish.gameObject.transform.position;
+		fishBounds.center = fish.transform.position;
 		octree.Add (fish, fishBounds);
 	}
 	

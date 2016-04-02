@@ -98,10 +98,9 @@ public class Collectable : MonoBehaviour
 			Destroy (powParticles, 10);
 		}
 
-		Fish fish = GetComponent<Fish> ();
-		if (fish != null)
-			fish.fishSchool.CollectFish (fish);
-
+		FishSchool school = GetComponentInParent<FishSchool>();
+		if (school != null)
+			school.CollectFish (gameObject);
 	}
 
 	void Update ()
