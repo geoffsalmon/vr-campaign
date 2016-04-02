@@ -33,10 +33,10 @@ public class FishLure : MonoBehaviour {
 		return lureSettings [index].GetSqrRange();
 	}
 
-	public bool IsFishInRange(Fish fish){
+	public bool IsFishInRange(GameObject fish){
 		if (GetRange () == 0)
 			return true;
-		Vector3 diff = fish.gameObject.transform.position - transform.position;
+		Vector3 diff = fish.transform.position - transform.position;
 		return diff.sqrMagnitude < GetSqrRange ();
 	}
 
