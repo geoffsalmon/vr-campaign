@@ -8,9 +8,10 @@ using System.Collections.Generic;
 
 public struct FishInfo {
 	public float speed;
-	public Vector3 previousDirection;
-	public Vector3 newDirection;
+	public Quaternion previousDirection;
+	public Quaternion newDirection;
 	public float intervalStart;
+	public Transform transform;
 }
 
 public class FishSchool : MonoBehaviour
@@ -96,13 +97,12 @@ public class FishSchool : MonoBehaviour
 
 		// Update fish rotations and positions
 		for (int i = 0; i < n; i++) {
-			GameObject fish = fishies[i];
 			FishInfo info = fishInfos[i];
 
 			float t = (time - info.intervalStart) / interval;
-			Vector3 forward = Vector3.Lerp (info.previousDirection, info.newDirection, t).normalized;
-			fish.transform.forward = forward;
-			fish.transform.position = fish.transform.position + forward * info.speed * delta;
+			Quaternion dir = Quaternion.Slerp(info.previousDirection, info.newDirection, t);
+			info.transform.rotation = dir;
+			info.transform.position += info.transform.forward * info.speed * delta;
 		}
 
 		// The direction each fish is turning towards is recalulated once in every interval. We
@@ -158,13 +158,13 @@ public class FishSchool : MonoBehaviour
 		// 4) Attraction. The fish faces towards the average position of all fish.
 		// 5) Lures. The fish faces towards or away from lures, depending on the lure weight.
 
-		Vector3 selfDirection = fish.transform.forward * weightOfSelf;
+		Vector3 selfDirection = info.transform.forward * weightOfSelf;
 		//Get the vector that best faces away from very nearby fish.
 		Vector3 repulsion = GetRepulsionAveragePosition (fish) * weightOfRepulsion;
 		//Get the direction that nearby fish are generally facing.
 		Vector3 orientation = GetOrientationAverageDirection (fish) * weightOfOrientation;
 
-		Vector3 attractionDirection = GetAverageFishPosition () - fish.transform.position;
+		Vector3 attractionDirection = GetAverageFishPosition () - info.transform.position;
 		//Get the unit vector that best faces towards all fish.
 		Vector3 attraction = attractionDirection.normalized * weightOfAttraction;
 		//Get the vector representing the influence of all lures in the scene on this fish.
@@ -179,8 +179,8 @@ public class FishSchool : MonoBehaviour
 		}
 
 		//Calculate the direction this fish will gradually face until the next fish calculation.
-		info.newDirection = selfDirection - repulsion + orientation + attraction + lure + boundary;
-		info.previousDirection = fish.transform.forward;
+		info.newDirection = Quaternion.LookRotation(selfDirection - repulsion + orientation + attraction + lure + boundary);
+		info.previousDirection = info.transform.rotation;
 	}
 
 	private FishLure[] GetFishLures ()
@@ -260,8 +260,9 @@ public class FishSchool : MonoBehaviour
 				fishies.Add(fish);
 
 				fishInfos[fishi].speed = fishType.speed;
-				fishInfos[fishi].previousDirection = fishInfos[fishi].newDirection = fish.transform.forward;
+				fishInfos[fishi].previousDirection = fishInfos[fishi].newDirection = fish.transform.rotation;
 				fishInfos[fishi].intervalStart = Time.time;
+				fishInfos[fishi].transform = fish.transform;
 				fishi++;
 //			Color newColor = new Color( Random.value, Random.value, Random.value, 1.0f ); // RANDOM COLOR ADDED
 //			fishies[i].GetComponent<MeshRenderer>().material.color = newColor; // RANDOM COLOR APPLIED
