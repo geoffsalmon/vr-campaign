@@ -114,17 +114,17 @@ public class BoundsOctree<T> {
 	/// </summary>
 	/// <param name="checkBounds">bounds to check.</param>
 	/// <returns>Objects that intersect with the specified bounds.</returns>
-	public T[] GetColliding(Bounds checkBounds) {
+	public T[] GetColliding(ref Bounds checkBounds) {
 		//#if UNITY_EDITOR
 		// For debugging
 		//AddCollisionCheck(checkBounds);
 		//#endif
 		List<T> collidingWith = new List<T>();
-		GetColliding(checkBounds, collidingWith);
+		GetColliding(ref checkBounds, collidingWith);
 		return collidingWith.ToArray();
 	}
 
-	public void GetColliding(Bounds checkBounds, List<T> result) {
+	public void GetColliding(ref Bounds checkBounds, List<T> result) {
 		rootNode.GetColliding(ref checkBounds, result);
 	}
 

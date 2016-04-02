@@ -309,7 +309,7 @@ public class FishSchool : MonoBehaviour
 		Vector3 direction = Vector3.zero;		
 		boundsOfOrientation.center = fish.transform.localPosition;
 		scratchList.Clear();
-		octree.GetColliding(boundsOfOrientation, scratchList);
+		octree.GetColliding(ref boundsOfOrientation, scratchList);
 		foreach (FishInfo otherFish in scratchList)
 			direction += otherFish.transform.localRotation * Vector3.forward;
 		direction.Normalize();
@@ -334,7 +334,7 @@ public class FishSchool : MonoBehaviour
 		Vector3 nearby = Vector3.zero;
 		boundsOfRepulsion.center = fish.transform.localPosition;
 		scratchList.Clear();
-		octree.GetColliding(boundsOfRepulsion, scratchList);
+		octree.GetColliding(ref boundsOfRepulsion, scratchList);
 		foreach (FishInfo otherFish in scratchList)
 			nearby += otherFish.transform.localPosition;
 		nearby -= scratchList.Count * boundsOfRepulsion.center;

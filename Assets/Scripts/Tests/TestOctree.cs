@@ -27,7 +27,7 @@ public class TestOctree : MonoBehaviour {
 			octree.DrawAllObjects (); // Mark object positions
 		
 			Gizmos.color = Color.green;
-			foreach (GameObject go in octree.GetColliding(bounds))
+			foreach (GameObject go in octree.GetColliding(ref bounds))
 				Gizmos.DrawCube (go.transform.position, Vector3.one);
 		}
 	}
