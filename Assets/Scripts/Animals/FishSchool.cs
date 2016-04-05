@@ -57,7 +57,7 @@ public class FishSchool : MonoBehaviour
 	private FishLure[] fishLures;
 	private GameObject fishContainer;
 	private Bounds fishBounds;
-	private Bounds boundsOfOrientation, boundsOfRepulsion;
+	private Bounds collideBounds;
 	private BoundsOctree<FishInfo> octree;
 	private List<FishInfo> scratchList;
 
@@ -115,14 +115,14 @@ public class FishSchool : MonoBehaviour
 		}
 
 		// The direction each fish is turning towards is recalulated once in every interval. We
-		// update the direction for only a subset of the fish in a single call to Update.
+		// update the direction for only a subset of the fish in each call to Update.
 
 		if (updateStartIndex >= n) {
-			// Have update all fish directions
+			// Have updated all fish directions
 			float actualInterval = time - intervalStartTime;
 			if (!intervalUpdatesFinished) {
 				// When we first finish ApplyZones on all fish in the interval,
-				// Recalculate the number to call ApplyZones on each frame such
+				// recalculate the number to call ApplyZones on each frame such
 				// so that fish updates are spread throughout the interval.
 				intervalUpdatesFinished = true;
 
@@ -167,13 +167,13 @@ public class FishSchool : MonoBehaviour
 		// 4) Attraction. The fish faces towards the average position of all fish.
 		// 5) Lures. The fish faces towards or away from lures, depending on the lure weight.
 
-		Quaternion dir = info.transform.localRotation;
-
-		Vector3 selfDirection = (dir * Vector3.forward)* weightOfSelf;
-		//Get the vector that best faces away from very nearby fish.
-		Vector3 repulsion = GetRepulsionAveragePosition (info) * weightOfRepulsion;
-		//Get the direction that nearby fish are generally facing.
-		Vector3 orientation = GetOrientationAverageDirection (info) * weightOfOrientation;
+		//vector that best faces towards very nearby fish.
+		Vector3 repulsion;
+		//The direction that nearby fish are generally facing.
+		Vector3 orientation;
+		GetRepulsionAndOrientation(info, out repulsion, out orientation);
+		repulsion = repulsion * weightOfRepulsion;
+		orientation = orientation * weightOfOrientation;
 
 		Vector3 attractionDirection = GetAverageFishPosition () - info.transform.localPosition;
 		//Get the unit vector that best faces towards all fish.
@@ -190,6 +190,8 @@ public class FishSchool : MonoBehaviour
 		}
 
 		//Calculate the direction this fish will gradually face until the next fish calculation.
+		Quaternion dir = info.transform.localRotation;
+		Vector3 selfDirection = (dir * Vector3.forward)* weightOfSelf;
 		info.newDirection = Quaternion.LookRotation(selfDirection - repulsion + orientation + attraction + lure + boundary);
 		info.previousDirection = dir;
 	}
@@ -247,8 +249,8 @@ public class FishSchool : MonoBehaviour
 		fishBounds = new Bounds (Vector3.zero, new Vector3 (0.2f, 0.2f, 0.2f)); //octree needs some fish size, values don't matter much
 		octree = new BoundsOctree<FishInfo> (schoolWidth, Vector3.zero, 0.1f, 1);
 
-		boundsOfOrientation = new Bounds (Vector3.zero, new Vector3 (radiusOfOrientation, radiusOfOrientation, radiusOfOrientation));
-		boundsOfRepulsion = new Bounds (Vector3.zero, new Vector3 (radiusOfRepulsion, radiusOfRepulsion, radiusOfRepulsion));
+		float r = Mathf.Max(radiusOfOrientation, radiusOfRepulsion);
+		collideBounds = new Bounds (Vector3.zero, new Vector3 (r, r, r));
 	}
 	
 	private void MakeFishies ()
@@ -296,24 +298,44 @@ public class FishSchool : MonoBehaviour
 		Vector3 lure = Vector3.zero;
 		Vector3 toLure;
 		foreach (FishLure fishLure in fishLures) {
-			if (fishLure.IsFishInRange (fish.transform.position, out toLure)) {
+			if (fishLure.enabled && fishLure.IsFishInRange (fish.transform.position, out toLure)) {
 				lure += toLure.normalized * fishLure.GetWeight ();
 			}
 		}
 		return lure;
 	}
 	
-	private Vector3 GetOrientationAverageDirection (FishInfo fish)
+	private void GetRepulsionAndOrientation (FishInfo fish, out Vector3 repulsion, out Vector3 orientation)
 	{
-		//Calculates the average direction of all fish within a medium distance to this fish.
-		Vector3 direction = Vector3.zero;		
-		boundsOfOrientation.center = fish.transform.localPosition;
+		Vector3 fishPos = fish.transform.localPosition;
+
+		// sum of vectors from this fish to fish within the repulsion radius
+		Vector3 repulsionSum = Vector3.zero;
+		// sum of direction vectors of fish within the orientation radius
+		Vector3 orientationSum = Vector3.zero;
+
+		float repulsionSq = radiusOfRepulsion * radiusOfRepulsion;
+		float orientationSq = radiusOfOrientation * radiusOfOrientation;
+
+		// Get all fish withing orientation zone. This assumes the radius of repulsion
+		// is smaller than the radius of orientation.
+		collideBounds.center = fishPos;
 		scratchList.Clear();
-		octree.GetColliding(ref boundsOfOrientation, scratchList);
-		foreach (FishInfo otherFish in scratchList)
-			direction += otherFish.transform.localRotation * Vector3.forward;
-		direction.Normalize();
-		return direction;
+		octree.GetColliding(ref collideBounds, scratchList);
+
+		foreach (FishInfo otherFish in scratchList) {
+			Vector3 fishDir = otherFish.transform.localPosition - fishPos;
+			float distSq = fishDir.sqrMagnitude;
+			if (distSq < repulsionSq) {
+				repulsionSum += fishDir;
+			}
+			if (distSq < orientationSq) {
+				orientationSum += otherFish.transform.localRotation * Vector3.forward;
+			}
+		}
+
+		repulsion = repulsionSum.normalized;
+		orientation = orientationSum.normalized;
 	}
 
 	private bool IsFishTooLow (FishInfo fish)
@@ -326,20 +348,6 @@ public class FishSchool : MonoBehaviour
 	{
 		//This returns true when the fish is above the water MovementBoundary.
 		return ceilingBoundary != null && ceilingBoundary.IsBreakingRule (fish.transform.position);
-	}
-	
-	private Vector3 GetRepulsionAveragePosition (FishInfo fish)
-	{
-		//Finds the average position of all fish very near the fish, returns a unit vector in that direction.
-		Vector3 nearby = Vector3.zero;
-		boundsOfRepulsion.center = fish.transform.localPosition;
-		scratchList.Clear();
-		octree.GetColliding(ref boundsOfRepulsion, scratchList);
-		foreach (FishInfo otherFish in scratchList)
-			nearby += otherFish.transform.localPosition;
-		nearby -= scratchList.Count * boundsOfRepulsion.center;
-
-		return nearby.normalized;
 	}
 
 	public void CollectFish(GameObject fish){
